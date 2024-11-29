@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PO Detail</title>
+
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
+  <!-- daterange picker -->
+  <link rel="stylesheet" href="plugins/daterangepicker/daterangepicker.css">
+  <!-- iCheck for checkboxes and radio inputs -->
+  <link rel="stylesheet" href="plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+  <!-- Bootstrap Color Picker -->
+  <link rel="stylesheet" href="plugins/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css">
+  <!-- Tempusdominus Bootstrap 4 -->
+  <link rel="stylesheet" href="plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
+  <!-- Select2 -->
+  <link rel="stylesheet" href="plugins/select2/css/select2.min.css">
+  <link rel="stylesheet" href="plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+  <!-- Bootstrap4 Duallistbox -->
+  <link rel="stylesheet" href="plugins/bootstrap4-duallistbox/bootstrap-duallistbox.min.css">
+  <!-- BS Stepper -->
+  <link rel="stylesheet" href="plugins/bs-stepper/css/bs-stepper.min.css">
+  <!-- dropzonejs -->
+  <link rel="stylesheet" href="plugins/dropzone/min/dropzone.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="dist/css/adminlte.min.css">
+  <!-- Multiselect style -->
+  <link rel="stylesheet" href="dist/css/style.css">
+  <!-- DataTables -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/2.1.5/css/dataTables.jqueryui.min.css">
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script> 
+  <script src="https://cdn.datatables.net/2.1.5/js/dataTables.min.js"></script> 
+  <script src="https://cdn.datatables.net/2.1.5/js/dataTables.jqueryui.min.js"></script>
+  <link rel="stylesheet" href="plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+  <link rel="stylesheet" href="plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+  <link rel="stylesheet" href="plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+  <!-- Bootstrap -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+  <style>
+    
+  </style>
+</head>
+<body class="hold-transition sidebar-mini">
+<div class="wrapper">
+
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        
+        <!-- Form & Approval -->
+        <!-- <div class="card">
+            1
+        </div> -->
+        <!-- End Form & Approval -->
+
+        <!-- Table -->
+        <div class="card">
+            <div class="card-header bg-light">
+                <!-- Button Simpan -->
+                <button type="button" class="btn btn-primary mt-2"><i class="fa fa-save text-sm"></i> Simpan</button>
+                <!-- End Button Simpan -->
+
+                <!-- Button Tambah -->
+                <button type="button" class="btn btn-success mt-2"><i class="fa fa-plus text-sm"></i> Tambah Item</button>
+                <!-- End Button Tambah -->
+
+                <!-- Button Action -->
+                <div class="btn-group mt-2">
+                    <button type="button" class="btn btn-info">Aksi</button>
+                    <button type="button" class="btn btn-info dropdown-toggle dropdown-hover dropdown-icon" data-toggle="dropdown">
+                      <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <div class="dropdown-menu" role="menu">
+                      <a class="dropdown-item" href="#">Cetak 1</a>
+                      <a class="dropdown-item" href="#">Cetak 2</a>
+                      <a class="dropdown-item" href="#">Cetak 3</a>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" href="#">PDF</a>
+                    </div>
+                </div>
+                <!-- Button Action -->
+            </div>
+            <div class="card-body">
+               <div class="col-12" style="overflow-x: scroll;">
+                <table id="example2" class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th style="width: 25%;">Deskripsi Material</th>
+                            <th class="text-center">Satuan</th>
+                            <th class="text-center">Konversi</th>
+                            <th class="text-center">QTY</th>
+                            <th class="text-center">Dikirim</th>
+                            <th class="text-center">Harga Satuan</th>
+                            <th class="text-center" style="width: 15%;">Total</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>2</td>
+                            <td><input type="text" class="form-control form-control-sm" value="DEF" disabled></td>
+                            <td><input type="text" class="form-control form-control-sm text-center" value="pcs" disabled></td>
+                            <td><input type="number" class="form-control form-control-sm text-right" value="1.50" disabled></td>
+                            <td><input type="number" class="form-control form-control-sm text-bold text-right" value="3" disabled></td>
+                            <td><input type="number" class="form-control form-control-sm text-bold text-right text-danger" value="0" disabled></td>
+                            <td>
+                                <input type="number" class="form-control form-control-sm text-right" value="0" disabled>
+                                <input type="number" class="form-control form-control-sm text-right mt-2" value="0" disabled>
+                            </td>
+                            <td class="text-right">1</td>
+                            <td><button class="btn btn-sm btn-danger square"><i class="fas fa-times"></i></button></td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>
+                                <input type="text" class="form-control form-control-sm" value="ABC" disabled>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control form-control-sm text-center" value="pcs" disabled>
+                            </td>
+                            <td>
+                                <input type="number" class="form-control form-control-sm text-right" value="1.00" disabled>
+                            </td>
+                            <td>
+                                <input type="number" class="form-control form-control-sm text-bold text-right" value="17" disabled>
+                            </td>
+                            <td>
+                                <input type="number" class="form-control form-control-sm text-bold text-right text-danger" value="0" disabled>
+                            </td>
+                            <td>
+                                <input type="number" class="form-control form-control-sm text-right" value="0" disabled>
+                                <input type="number" class="form-control form-control-sm text-right mt-2" value="0" disabled>
+                            </td>
+                            <td class="text-right">
+                                0
+                            </td>
+                            <td>
+                                <button class="btn btn-sm btn-danger square"><i class="fas fa-times"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+               </div>
+            </div>
+            <div class="card-footer">
+                <!-- Button Simpan -->
+                <button type="button" class="btn btn-primary mt-2"><i class="fa fa-save text-sm"></i> Simpan</button>
+                <!-- End Button Simpan -->
+
+                <!-- Button Tambah -->
+                <button type="button" class="btn btn-success mt-2"><i class="fa fa-plus text-sm"></i> Tambah Item</button>
+                <!-- End Button Tambah -->
+
+                <!-- Button Action -->
+                <div class="btn-group mt-2">
+                    <button type="button" class="btn btn-info">Action</button>
+                    <button type="button" class="btn btn-info dropdown-toggle dropdown-hover dropdown-icon" data-toggle="dropdown">
+                      <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <div class="dropdown-menu" role="menu">
+                      <a class="dropdown-item" href="#">Cetak 1</a>
+                      <a class="dropdown-item" href="#">Cetak 2</a>
+                      <a class="dropdown-item" href="#">Cetak 3</a>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" href="#">PDF</a>
+                    </div>
+                </div>
+                <!-- Button Action -->
+            </div>
+        </div>
+        <!-- End Table -->
+
+        <!-- Grand Total -->
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+
+                    <div class="col-md-5">
+                        <div class="form-group">
+                            <textarea class="form-control" rows="3" placeholder="Enter ..." disabled>
+
+                            </textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="">Ditandatangani oleh</label>
+                            <input type="text" class="form-control" id="" placeholder="" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="">Mata Uang / Kurs</label>
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend" style="width: 30%;">
+                                    <select class="form-control">
+                                        <option value="">IDR</option>
+                                        <option value="">USD</option>
+                                        <option value="">EUR</option>
+                                        <option value="">GBP</option>
+                                        <option value="">JPY</option>
+                                      </select>
+                                </div>
+                                <input type="number" class="form-control text-right" value="0.0" disabled>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-1"></div>
+                    <div class="col-md-6">
+
+                        <!-- SubTotal -->
+                        <div class="row">
+                            <div class="col-2 mb-3">
+                                <label for="inputEmail3" class="col-form-label">SubTotal</label>
+                            </div>
+                            <div class="col-4"></div>
+                            <div class="col-5">
+                                <input type="number" class="form-control text-danger text-right" id="inputEmail3" value="0.00" disabled>
+                            </div>
+                        </div>
+                        <!-- End SubTotal -->
+
+                        <!-- Discount 1 -->
+                        <div class="row">
+                            <div class="col-2">
+                                <label for="inputEmail3" class="col-form-label">Disc 1</label>
+                            </div>
+                            <div class="col-4">
+                                <div class="input-group mb-3">
+                                    <input type="number" class="form-control text-danger text-right" value="0.0" disabled>
+                                    <div class="input-group-append">
+                                      <span class="input-group-text"><i class="fas fa-percentage"></i></span>
+                                    </div>
+                                  </div>
+                            </div>
+                            <div class="col-5">
+                                <input type="number" class="form-control text-danger text-right" id="inputEmail3" value="0.00" disabled>
+                            </div>
+                        </div>
+                        <!-- End Discount 1 -->
+
+                        <!-- Discount 2 -->
+                        <div class="row">
+                            <div class="col-2">
+                                <label for="inputEmail3" class="col-form-label">Disc 2</label>
+                            </div>
+                            <div class="col-4">
+                                <div class="input-group mb-3">
+                                    <input type="number" class="form-control text-danger text-right" value="0.0" disabled>
+                                    <div class="input-group-append">
+                                      <span class="input-group-text"><i class="fas fa-percentage"></i></span>
+                                    </div>
+                                  </div>
+                            </div>
+                            <div class="col-5">
+                                <input type="number" class="form-control text-danger text-right" id="inputEmail3" value="0.00" disabled>
+                            </div>
+                        </div>
+                        <!-- End Discount 2 -->
+
+                        <!-- Discount 3 -->
+                        <div class="row">
+                            <div class="col-2">
+                                <label for="inputEmail3" class="form-label text-sm display-4">Pembulatan/<br>Disc 3</label>
+                            </div>
+                            <div class="col-4">
+                                <div class="input-group mb-3">
+                                    <input type="number" class="form-control text-danger text-right" value="0.0" disabled>
+                                    <div class="input-group-append">
+                                      <span class="input-group-text"><i class="fas fa-percentage"></i></span>
+                                    </div>
+                                  </div>
+                            </div>
+                            <div class="col-5">
+                                <input type="number" class="form-control text-danger text-right" id="inputEmail3" value="0.00" disabled>
+                            </div>
+                        </div>
+                        <!-- End Discount 3 -->
+
+                        <!-- PPN -->
+                        <div class="row">
+                            <div class="col-2">
+                                <div class="custom-control custom-checkbox col-form-label">
+                                    <input class="custom-control-input" type="checkbox" id="ppn" value="option1" checked>
+                                    <label for="ppn" class="custom-control-label">PPN</label>
+                                </div>                            </div>
+                            <div class="col-4">
+                                <div class="input-group mb-3">
+                                    <input type="number" class="form-control text-right" value="11.0" disabled>
+                                    <div class="input-group-append">
+                                      <span class="input-group-text"><i class="fas fa-percentage"></i></span>
+                                    </div>
+                                  </div>
+                            </div>
+                            <div class="col-5">
+                                <input type="number" class="form-control text-right" id="inputEmail3" value="0.00" disabled>
+                            </div>
+                        </div>
+                        <!-- End PPN -->
+
+                        <hr>
+
+                        <!-- Grand Total -->
+                        <div class="row">
+                            <div class="col-4 mb-3">
+                                <label for="" class="col-form-label text-primary">Grand Total</label>
+                            </div>
+                            <div class="col-2"></div>
+                            <div class="col-5">
+                                <input type="number" class="form-control text-primary text-bold text-right" id="inputEmail3" value="0.00" disabled>
+                            </div>
+                        </div>
+                        <!-- End Grand Total -->
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Grand Total -->
+        
+      </div>
+    </section>
+    <!-- End Main Content -->
+  
+</div>
+
+<!-- DataTables Scroll -->
+<script>
+    new DataTable('#example', {
+        scrollX: true
+    });
+</script>
+
+<!-- Modal Script -->
+<script>
+    var modal = document.getElementById("myModal");
+    var btn = document.getElementById("addTools");
+    var span = document.getElementsByClassName("close")[0];
+
+    btn.onclick = function() {
+        modal.style.display = "block";
+    }
+
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>
+<!-- End Modal Script -->
+
+<!-- DataTables -->
+<script>
+    $(document).ready(function() {
+        $('#myTable').DataTable();
+    });
+
+    $(document).ready(function() {
+        $('#myTable').DataTable();
+
+        $('#myTable tbody').on('click', 'td', function() {
+            var cellData = $(this).text();
+        });
+    });
+    
+    new DataTable('#myTable', {
+        scrollX: true
+    });
+</script>
+<!-- End DataTables -->
+
+<!-- jQuery -->
+<script src="plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 4 -->
+<script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- Select2 -->
+<script src="plugins/select2/js/select2.full.min.js"></script>
+<!-- Bootstrap4 Duallistbox -->
+<script src="plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js"></script>
+<!-- InputMask -->
+<script src="plugins/moment/moment.min.js"></script>
+<script src="plugins/inputmask/jquery.inputmask.min.js"></script>
+<!-- date-range-picker -->
+<script src="plugins/daterangepicker/daterangepicker.js"></script>
+<!-- bootstrap color picker -->
+<script src="plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js"></script>
+<!-- Tempusdominus Bootstrap 4 -->
+<script src="plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
+<!-- Bootstrap Switch -->
+<script src="plugins/bootstrap-switch/js/bootstrap-switch.min.js"></script>
+<!-- BS-Stepper -->
+<script src="plugins/bs-stepper/js/bs-stepper.min.js"></script>
+<!-- dropzonejs -->
+<script src="plugins/dropzone/min/dropzone.min.js"></script>
+<!-- AdminLTE App -->
+<script src="dist/js/adminlte.min.js"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="dist/js/demo.js"></script>
+<!-- Multiselect -->
+ <script src="dist/js/style.js"></script>
+ <!-- DataTables  & Plugins -->
+<script src="plugins/datatables/jquery.dataTables.min.js"></script>
+<script src="plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+<!-- <script src="plugins/datatables-responsive/js/dataTables.responsive.min.js"></script> -->
+<script src="plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+<script src="plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+<script src="plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+<script src="plugins/jszip/jszip.min.js"></script>
+<script src="plugins/pdfmake/pdfmake.min.js"></script>
+<script src="plugins/pdfmake/vfs_fonts.js"></script>
+<script src="plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+<script src="plugins/datatables-buttons/js/buttons.print.min.js"></script>
+<script src="plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+<!-- Page specific script -->
+<script>
+    $(function () {
+      $("#example1").DataTable({
+        "responsive": true, "lengthChange": false, "autoWidth": false,
+        "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+      }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+      $('#example2').DataTable({
+        "paging": true,
+        "lengthChange": false,
+        "searching": false,
+        "ordering": true,
+        "info": true,
+        "autoWidth": false,
+        "responsive": true,
+      });
+    });
+  </script>
+</body>
+</html>
