@@ -17,7 +17,7 @@
                     <div class="checkbox">
                       <label for="drop-remove">
                         <input type="checkbox" id="drop-remove">
-                        remove after drop
+                        Hapus setelah ditambahkan
                       </label>
                     </div>
                   </div>
@@ -98,14 +98,15 @@ $(document).ready(function() {
 
     var calendar = new Calendar(calendarEl, {
         headerToolbar: {
-            left: 'prev,next today',
+            left: 'prev,next',
             center: 'title',
-            right: 'dayGridMonth,timeGridWeek'
+            right: 'today'
         },
         firstDay: 1,
         editable: true,
         droppable: true,
         displayEventTime: false,
+        height: 'auto',
         events: function(fetchInfo, successCallback, failureCallback) {
             $.ajax({
                 url : '<?= site_url('CalendarController/load_events') ?>',
@@ -158,20 +159,23 @@ $(document).ready(function() {
                         success: function(response) {
                             response = JSON.parse(response);
                             if (response.status === 'success') {
-                                info.draggedEl.parentNode.removeChild(info.draggedEl);
+                                if (checkbox.checked) {
+                                    info.draggedEl.parentNode.removeChild(info.draggedEl);
+                                }
+                                toastr.success('Jadwal berhasil ditambahkan');
                             } else {
-                                alert('Failed to add event: ' + response.message);
+                                toastr.error('Gagal menambahkan jadwal');
                             }
                         },
                         error: function() {
-                            alert('Failed to save event.');
+                            toastr.error('Gagal menyimpan jadwal');
                         }
                     });
                 } else {
                     alert('Event already exists.');
                 }
             } else {
-                alert('Event title cannot be empty.');
+                toastr.warning('Title tidak boleh kosong');
             }
         },
 
@@ -201,9 +205,10 @@ $(document).ready(function() {
                 data: event,
                 success: function(response) {
                     console.log('Event updated: ', response);
+                    toastr.success('Jadwal berhasil diubah');
                 },
                 error: function() {
-                    alert('Failed to update event.');
+                    toastr.error('Gagal mengubah jadwal');
                 }
             });
         },
@@ -235,9 +240,10 @@ $(document).ready(function() {
                 data: event,
                 success: function(response) {
                     console.log('Event updated: ', response);
+                    toastr.success('Jadwal berhasil diubah');
                 },
                 error: function() {
-                    alert('Failed to update event.');
+                    toastr.error('Gagal mengubah jadwal');
                 }
             });
         },
@@ -250,9 +256,10 @@ $(document).ready(function() {
                     data: { id: info.event.id },
                     success: function() {
                         info.event.remove();
+                        toastr.success('Jadwal berhasil dihapus')
                     },
                     error: function() {
-                        alert('Failed to delete event.');
+                        toastr.error('Gagal menghapus jadwal');
                     }
                 });
             }
