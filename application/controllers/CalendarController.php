@@ -139,5 +139,15 @@ class CalendarController extends CI_Controller
         } else {
             echo 'Failed to delete event';
         }
-    }    
+    }
+
+    public function list_events()
+    {
+
+    }
+
+    public function add_list_event()
+    {
+        
+    }
 }

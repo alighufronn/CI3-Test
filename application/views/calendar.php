@@ -1,3 +1,47 @@
+    <style>
+        .text-primary2 {
+            color:#007BFF;
+        }
+        .text-primary2:hover {
+            color: #007BFF;
+        }
+
+        .text-warning2 {
+            color: #ffc107;
+        }
+        .text-warning2:hover {
+            color: #ffc107;
+        }
+
+        .text-success2 {
+            color: #28a745;
+        }
+        .text-success2:hover {
+            color: #28a745;
+        }
+
+        .text-danger2 {
+            color: #dc3545;
+        }
+        .text-danger2:hover {
+            color: #dc3545;
+        }
+
+        .text-info2 {
+            color: #17a2b8;
+        }
+        .text-info2:hover {
+            color: #17a2b8;
+        }
+
+        .text-secondary2 {
+            color: #6c757d;
+        }
+        .text-secondary2:hover {
+            color: #6c757d;
+        }
+    </style>
+    
     <section class="content">
       <div class="container-fluid">
         <div class="row">
@@ -9,11 +53,11 @@
                 </div>
                 <div class="card-body">
                   <div id="external-events">
-                    <div class="external-event bg-success">Lunch</div>
+                    <!-- <div class="external-event bg-success">Lunch</div>
                     <div class="external-event bg-warning">Go home</div>
                     <div class="external-event bg-info">Do homework</div>
                     <div class="external-event bg-primary">Work on UI design</div>
-                    <div class="external-event bg-danger">Sleep tight</div>
+                    <div class="external-event bg-danger">Sleep tight</div> -->
                     <div class="checkbox">
                       <label for="drop-remove">
                         <input type="checkbox" id="drop-remove">
@@ -30,11 +74,12 @@
                 <div class="card-body">
                   <div class="btn-group" style="width: 100%; margin-bottom: 10px;">
                     <ul class="fc-color-picker" id="color-chooser">
-                      <li><a class="text-primary" href="#"><i class="fas fa-square"></i></a></li>
-                      <li><a class="text-warning" href="#"><i class="fas fa-square"></i></a></li>
-                      <li><a class="text-success" href="#"><i class="fas fa-square"></i></a></li>
-                      <li><a class="text-danger" href="#"><i class="fas fa-square"></i></a></li>
-                      <li><a class="text-muted" href="#"><i class="fas fa-square"></i></a></li>
+                      <li><a class="text-primary2" href="#"><i class="fas fa-square"></i></a></li>
+                      <li><a class="text-warning2" href="#"><i class="fas fa-square"></i></a></li>
+                      <li><a class="text-success2" href="#"><i class="fas fa-square"></i></a></li>
+                      <li><a class="text-danger2" href="#"><i class="fas fa-square"></i></a></li>
+                      <li><a class="text-info2" href="#"><i class="fas fa-square"></i></a></li>
+                      <li><a class="text-secondary2" href="#"><i class="fas fa-square"></i></a></li>
                     </ul>
                   </div>
                   <div class="input-group">
@@ -68,7 +113,7 @@ $(document).ready(function() {
     var checkbox = document.getElementById('drop-remove');
     var calendarEl = document.getElementById('calendar');
 
-    var currColor = '#3c8dbc';
+    var currColor = '#007bff';
 
     new Draggable(containerEl, {
         itemSelector: '.external-event',
@@ -271,24 +316,28 @@ $(document).ready(function() {
     $('#color-chooser > li > a').click(function(e) {
         e.preventDefault();
         currColor = $(this).css('color');
+
+        console.log('Selected color:', currColor);
+
         $('#add-new-event').css({
             'background-color': currColor,
-            'border-color': currColor
+            'border-color': currColor,
         });
     });
 
     $('#add-new-event').click(function() {
         var val = $('#new-event').val().trim();
         if (val.length === 0) {
-            alert('Event title cannot be empty.');
+            toastr.warning('Title tidak boleh kosong');
             return;
         }
 
-        var event = $('<div />');
-        event.css({
+        var textColor = (currColor === 'rgb(255, 193, 7)') ? '#000' : '#FFF';
+
+        var event = $('<div />').css({
             'background-color': currColor,
             'border-color': currColor,
-            'color': '#FFF'
+            'color': textColor,
         }).addClass('external-event').text(val);
         $('#external-events').prepend(event);
         $('#new-event').val('');
