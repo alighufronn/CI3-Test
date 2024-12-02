@@ -87,6 +87,15 @@ $(document).ready(function() {
         return new Date(utcTime);
     }
 
+    function adjustEndDate(events) {
+        events.forEach(function(event) {
+            var endDate = new Date(event.end);
+            endDate.setDate(endDate.getDate() + 1);
+            event.end = endDate.toISOString().slice(0, 10);
+        });
+        return events;
+    }
+
     var calendar = new Calendar(calendarEl, {
         headerToolbar: {
             left: 'prev,next today',
@@ -97,7 +106,21 @@ $(document).ready(function() {
         editable: true,
         droppable: true,
         displayEventTime: false,
-        events: '<?= site_url('CalendarController/load_events') ?>',
+        events: function(fetchInfo, successCallback, failureCallback) {
+            $.ajax({
+                url : '<?= site_url('CalendarController/load_events') ?>',
+                method: 'GET',
+                success: function(data) {
+                    var events = JSON.parse(data);
+                    events = adjustEndDate(events);
+                    successCallback(events);
+                },
+                error: function() {
+                    alert('Failed to load events');
+                    failureCallback();
+                }
+            });
+        },
         drop: function(info) {
             var title = info.draggedEl.innerText.trim();
             if (title) {
@@ -155,6 +178,7 @@ $(document).ready(function() {
         eventResize: function(info) {
             var start = new Date(info.event.start);
             var end = new Date(info.event.end);
+            end.setDate(end.getDate() - 1);
 
             var startUTC7 = convertToUTCPlus7(start);
             var endUTC7 = convertToUTCPlus7(end);
@@ -187,6 +211,7 @@ $(document).ready(function() {
         eventDrop: function(info) {
             var start = new Date(info.event.start);
             var end = new Date(info.event.end);
+            end.setDate(end.getDate() - 1);
 
             var startUTC7 = convertToUTCPlus7(start);
             var endUTC7 = convertToUTCPlus7(end);
@@ -395,6 +420,7 @@ $(document).ready(function() {
                 }
             });
         },
+
         eventDrop: function(info) {
             var start = new Date(info.event.start);
             var end = new Date(info.event.end);
@@ -427,6 +453,7 @@ $(document).ready(function() {
                 }
             });
         },
+        
         eventClick: function(info) {
             if (confirm('Are you sure you want to delete this event?')) {
                 $.ajax({
