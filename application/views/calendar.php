@@ -47,14 +47,6 @@
         <div class="row">
           <div class="col-md-3">
             <div class="sticky-top mb-3">
-                <div class="card">
-                    <div class="card-header bg-light">
-                        <div class="card-title">Specific Role Events</div>
-                    </div>
-                    <div class="card-body">
-                        <button type="button" class="btn bg-primary w-100 text-center" data-toggle="modal" data-target="#roleModal">Add Event</button>
-                    </div>
-                </div>
               <div class="card">
                 <div class="card-header bg-light">
                   <h4 class="card-title">Draggable Events</h4>
@@ -122,13 +114,13 @@
             <div class="modal-body">
               <div class="form-group">
                 <label for="" class="">Title</label>
-                <input type="text" id="eventTitle" class="form-control" placeholder="What's the event?">
+                <input type="text" id="eventTitle" class="form-control" placeholder="What's the event?" required>
               </div>
               <div class="form-group">
                 <label for="">Date (Start - End)</label>
                 <div class="input-group">
-                    <input type="date" id="eventStart" class="form-control text-sm">
-                    <input type="date" id="eventEnd" class="form-control text-sm">
+                    <input type="date" id="eventStart" class="form-control text-sm" required>
+                    <input type="date" id="eventEnd" class="form-control text-sm" required>
                 </div>
               </div>
               <div class="form-group">
@@ -146,7 +138,7 @@
             </div>
             <div class="modal-footer justify-content-between">
               <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-              <button type="button" id="saveEventRole" class="btn btn-primary" data-dismiss="modal">Simpan</button>
+              <button type="button" id="saveEventRole" class="btn btn-primary">Simpan</button>
             </div>
           </div>
           <!-- /.modal-content -->
@@ -157,6 +149,15 @@
 
 <script>
 $(document).ready(function() {
+    var Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+    });
+
+    var userRole = '<?= $this->session->userdata('role'); ?>';
+
     var Calendar = FullCalendar.Calendar;
     var Draggable = FullCalendar.Draggable;
 
@@ -213,6 +214,10 @@ $(document).ready(function() {
             $.ajax({
                 url : '<?= site_url('CalendarController/load_events') ?>',
                 method: 'GET',
+                data: {
+                    id_user: '<?= $this->session->userdata("user_id") ?>',
+                    role: userRole,
+                },
                 success: function(data) {
                     var events = JSON.parse(data);
                     events = adjustEndDate(events);
@@ -224,6 +229,14 @@ $(document).ready(function() {
                 }
             });
         },
+        // events: {
+        //     url: '<?= site_url("CalendarController/load_events") ?>',
+        //     method: 'GET',
+        //     extraParams: {
+        //         id_user: '<?= $this->session->userdata("user_id") ?>',
+        //         role: userRole,
+        //     },
+        // },
 
         // Menambahkan
         drop: function(info) {
@@ -266,20 +279,31 @@ $(document).ready(function() {
                             if (checkbox.checked) {
                                 info.draggedEl.parentNode.removeChild(info.draggedEl);
                             }
-                            toastr.success('Jadwal berhasil ditambahkan');
+                            Toast.fire({
+                                icon: 'success',
+                                title: 'Jadwal berhasil ditambahkan',
+                            });
                         } else {
-                            toastr.error('Gagal menambahkan jadwal');
+                            Toast.fire({
+                                icon: 'error',
+                                title: 'Gagal menyimpan jadwal',
+                            });
                         }
                     },
                     error: function() {
-                        toastr.error('Gagal menyimpan jadwal');
+                        Toast.fire({
+                            icon: 'error',
+                            title: 'Gagal menyimpan jadwal',
+                        });
                     }
                 });
             } else {
-                toastr.warning('Title tidak boleh kosong');
+                Toast.fire({
+                    icon: 'warning',
+                    title: 'Title tidak boleh kosong',
+                });
             }
         },
-
 
         // Mengedit (Resize)
         eventResize: function(info) {
@@ -304,21 +328,39 @@ $(document).ready(function() {
                 allDay: false
             };
             console.log('Event data before sending (resize)', event);
-            if (event.id && event.title && event.start) {
-                $.ajax({
-                    url: '<?= site_url('CalendarController/update_event') ?>',
-                    method: 'POST',
-                    data: event,
-                    success: function(response) {
-                        console.log('Event updated: ', response);
-                        toastr.success('Jadwal berhasil diubah');
-                    },
-                    error: function() {
-                        toastr.error('Gagal mengubah jadwal');
-                    }
+            
+            if (info.event.extendedProps.role && userRole !== 'admin') {
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Kamu tidak memiliki akses untuk mengedit event ini',
                 });
+                return;
             } else {
-                toastr.error('Event ID, title, and start date cannot be empty');
+                if (event.id && event.title && event.start) {
+                    $.ajax({
+                        url: '<?= site_url('CalendarController/update_event') ?>',
+                        method: 'POST',
+                        data: event,
+                        success: function(response) {
+                            console.log('Event updated: ', response);
+                            Toast.fire({
+                                icon: 'success',
+                                title: 'Jadwal berhasil diubah',
+                            });
+                        },
+                        error: function() {
+                            Toast.fire({
+                                icon: 'error',
+                                title: 'Gagal mengubah jadwal',
+                            });
+                        }
+                    });
+                } else {
+                    Toast.fire({
+                        icon: 'warning',
+                        title: 'ID, Title, dan Tanggal mulai tidak boleh kosong',
+                    });
+                }
             }
         },
 
@@ -346,39 +388,79 @@ $(document).ready(function() {
             };
             console.log("Event data before sending (drop): ", event);
             
-            if (event.id && event.title && event.start) {
-                $.ajax({
-                    url: '<?= site_url('CalendarController/update_event') ?>',
-                    method: 'POST',
-                    data: event,
-                    success: function(response) {
-                        console.log('Event updated: ', response);
-                        toastr.success('Jadwal berhasil diubah');
-                    },
-                    error: function() {
-                        toastr.error('Gagal mengubah jadwal');
-                    }
+            if (info.event.extendedProps.role && userRole !== 'admin') {
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Kamu tidak memiliki akses untuk mengubah jadwal ini',
                 });
+                return;
             } else {
-                toastr.error('Event ID, title, and start date cannot be empty')
+                if (event.id && event.title && event.start) {
+                    $.ajax({
+                        url: '<?= site_url('CalendarController/update_event') ?>',
+                        method: 'POST',
+                        data: event,
+                        success: function(response) {
+                            console.log('Event updated: ', response);
+                            Toast.fire({
+                                icon: 'success',
+                                title: 'Jadwal berhasil diubah',
+                            });
+                        },
+                        error: function() {
+                            Toast.fire({
+                                icon: 'error',
+                                title: 'Gagal mengubah jadwal',
+                            });
+                        }
+                    });
+                } else {
+                    Toast.fire({
+                        icon: 'warning',
+                        title: 'ID, Title, dan Tanggal mulai tidak boleh kosong',
+                    });
+                }
             }
         },
         
         // Menghapus
         eventClick: function(info) {
-            if (confirm('Are you sure you want to delete this event?')) {
-                $.ajax({
-                    url: '<?= site_url('CalendarController/delete_event') ?>',
-                    method: 'POST',
-                    data: { id: info.event.id },
-                    success: function() {
-                        info.event.remove();
-                        toastr.success('Jadwal berhasil dihapus')
-                    },
-                    error: function() {
-                        toastr.error('Gagal menghapus jadwal');
-                    }
+            if (info.event.extendedProps.role && userRole !== 'admin') {
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Kamu tidak memiliki akses untuk menghapus event ini',
                 });
+            } else {
+                if (confirm('Are you sure you want to delete this event?')) {
+                    $.ajax({
+                        url: '<?= site_url('CalendarController/delete_event') ?>',
+                        method: 'POST',
+                        data: { id: info.event.id },
+                        success: function() {
+                            info.event.remove();
+                            Toast.fire({
+                                icon: 'success',
+                                title: 'Jadwal berhasil dihapus',
+                            });
+                        },
+                        error: function() {
+                            Toast.fire({
+                                icon: 'error',
+                                title: 'Gagal menghapus jadwal',
+                            });
+                        }
+                    });
+                }
+            }
+        },
+
+        dateClick: function(info) {
+            if (userRole === 'admin') {
+                var modal = $('#roleModal');
+                $('#eventStart').val(info.dateStr).prop('readonly', true);
+                $('#eventEnd').val(info.dateStr);
+
+                modal.modal('show');
             }
         }
 
@@ -387,6 +469,8 @@ $(document).ready(function() {
 
     $('#saveEventRole').on('click', function(e) {
             e.preventDefault();
+
+            var modal = $('#roleModal');
 
             var eventTitle = $('#eventTitle').val();
             var eventStart = $('#eventStart').val();
@@ -399,6 +483,14 @@ $(document).ready(function() {
 
             var adjustedEndDate = new Date(eventEnd);
             adjustedEndDate.setDate(adjustedEndDate.getDate() + 1);
+
+            if (eventEnd < eventStart) {
+                Toast.fire({
+                    icon: 'warning',
+                    title: 'Tanggal akhir tidak boleh lebih kecil dari tanggal Awal',
+                });
+                return;
+            }
 
             var eventData = {
                 title: eventTitle,
@@ -444,14 +536,24 @@ $(document).ready(function() {
                         $('#eventEnd').val('');
                         $('#eventRole').val('all');
 
-                        toastr.success('Jadwal berhasil ditambahkan');
+                        modal.modal('hide');
+                        Toast.fire({
+                            icon: 'success',
+                            title: 'Jadwal berhasil ditambahkan',
+                        });
                     } else {
-                        toastr.error('Gagal menambahkan jadwal');
+                        Toast.fire({
+                            icon: 'error',
+                            title: 'Gagal menambahkan jadwal',
+                        });
                     }
                 },
                 error: function(xhr, status, error) {
                     console.log('Error', error)
-                    toastr.error('Gagal menambahkan jadwal');
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'Gagal menambahkan jadwal',
+                    });
                 }
             });
         
@@ -476,7 +578,10 @@ $(document).ready(function() {
     $('#add-new-event').click(function() {
         var val = $('#new-event').val().trim();
         if (val.length === 0) {
-            toastr.warning('Title tidak boleh kosong');
+            Toast.fire({
+                icon: 'warning',
+                title: 'Title tidak boleh kosong',
+            });
             return;
         }
 
@@ -496,6 +601,8 @@ $(document).ready(function() {
 
 <script>
     $(document).ready(function() {
+        var userRole = '<?= $this->session->userdata("role") ?>';
+
         $('#eventRole option').each(function() {
             var text = $(this).text();
             var capitalizedText = text.replace(/\b\w/g, function(letter) {
@@ -521,7 +628,13 @@ $(document).ready(function() {
             }
         });
 
-        
+        if (userRole !== 'admin') {
+            $('#saveEventRole').prop('disabled', true);
+            $('#eventRole').prop('disabled', true);
+            $('#eventStart').prop('disabled', true);
+            $('#eventEnd').prop('disabled', true);
+            $('#eventTitle').prop('disabled', true);
+        }
     });
 </script>
 

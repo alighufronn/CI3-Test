@@ -58,6 +58,26 @@ class CalendarModel extends CI_Model
         return $this->db->insert_id();
     }
 
+    public function get_event($event_id)
+    {
+        $this->db->select('*');
+        $this->db->from($this->table);
+        $this->db->where('id', $event_id);
+        $query = $this->db->get();
+
+        return $query->row_array();
+    }
+
+    // public function update_event($event_id, $data)
+    // {
+    //     return $this->db->where('id', $event_id)->update($this->table, $data);
+    // }
+
+    // public function delete_event($id)
+    // {
+    //     return $this->db->where('id', $event_id)->delete($this->table);
+    // }
+
     public function update_event($id, $data)
     {
         return $this->db->where('id', $id)->update($this->table, $data);

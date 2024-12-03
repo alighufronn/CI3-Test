@@ -103,13 +103,13 @@ class CalendarController extends CI_Controller
         $backgroundColor = $this->input->post('backgroundColor');
         $borderColor = $this->input->post('borderColor');
         $textColor = $this->input->post('textColor');
-        $id_user = $this->input->post('id_user');
         $role = $this->input->post('role');
+
+        $user_role = $this->session->userdata('role');
         
-        if (empty($id) || empty($title) || empty($start)) {
-            echo 'Event ID, title, and start date cannot be empty.';
-            return;
-        }
+        // if ($user_role !== 'admin' && !empty($role)) {
+        //     echo json_encode(array('status' => 'error', 'message' => 'Hanya admin yang dapat mengedit event ini'));
+        // }
     
         $data = array(
             'title' => $title,
@@ -118,7 +118,6 @@ class CalendarController extends CI_Controller
             'backgroundColor' => $backgroundColor,
             'borderColor' => $borderColor,
             'textColor' => $textColor,
-            'id_user' => $id_user,
             'role' => $role,
         );
     
@@ -131,14 +130,11 @@ class CalendarController extends CI_Controller
 
     public function delete_event() {
         $id = $this->input->post('id');
-    
-        // Log the received data
-        log_message('debug', 'Received data: id=' . $id);
-    
-        if (empty($id)) {
-            echo 'Event ID cannot be empty.';
-            return;
-        }
+        $user_role = $this->session->userdata('role');
+        
+        // if ($user_role !== 'admin') {
+        //     echo json_encode(array('status' => 'error', 'message' => 'Hanya admin yang dapat menghapus event ini'));
+        // }
     
         if ($this->CalendarModel->delete_event($id)) {
             echo 'Event deleted successfully';

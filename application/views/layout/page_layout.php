@@ -252,6 +252,7 @@
 <script src="<?php echo('https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js') ?>"></script>
 <script src="<?= base_url('assets/AdminLTE/plugins/bootstrap/js/bootstrap.min.js')?>"></script>
 <script src="<?= base_url('assets/AdminLTE/plugins/sweetalert2/sweetalert2.min.js') ?>"></script>
+<!-- <script src="<?= base_url('assets/AdminLTE/plugins/sweetalert2/sweetalert2.all.min.js') ?>"></script> -->
 <script src="<?php echo('https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js') ?>"></script>
 <!-- jQuery -->
 <!-- jQuery UI 1.11.4 -->
