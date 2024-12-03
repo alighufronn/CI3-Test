@@ -47,28 +47,36 @@
         <div class="row">
           <div class="col-md-3">
             <div class="sticky-top mb-3">
+                <div class="card">
+                    <div class="card-header bg-light">
+                        <div class="card-title">Specific Role Events</div>
+                    </div>
+                    <div class="card-body">
+                        <button type="button" class="btn bg-primary w-100 text-center" data-toggle="modal" data-target="#roleModal">Add Event</button>
+                    </div>
+                </div>
               <div class="card">
-                <div class="card-header">
+                <div class="card-header bg-light">
                   <h4 class="card-title">Draggable Events</h4>
                 </div>
                 <div class="card-body">
                   <div id="external-events">
-                    <!-- <div class="external-event bg-success">Lunch</div>
+                    <div class="external-event bg-success">Lunch</div>
                     <div class="external-event bg-warning">Go home</div>
                     <div class="external-event bg-info">Do homework</div>
                     <div class="external-event bg-primary">Work on UI design</div>
-                    <div class="external-event bg-danger">Sleep tight</div> -->
+                    <div class="external-event bg-danger">Sleep tight</div>
                     <div class="checkbox">
                       <label for="drop-remove">
                         <input type="checkbox" id="drop-remove">
-                        Hapus setelah ditambahkan
+                        Remove after drop
                       </label>
                     </div>
                   </div>
                 </div>
               </div>
               <div class="card">
-                <div class="card-header">
+                <div class="card-header bg-light">
                   <h3 class="card-title">Create Event</h3>
                 </div>
                 <div class="card-body">
@@ -79,7 +87,6 @@
                       <li><a class="text-success2" href="#"><i class="fas fa-square"></i></a></li>
                       <li><a class="text-danger2" href="#"><i class="fas fa-square"></i></a></li>
                       <li><a class="text-info2" href="#"><i class="fas fa-square"></i></a></li>
-                      <li><a class="text-secondary2" href="#"><i class="fas fa-square"></i></a></li>
                     </ul>
                   </div>
                   <div class="input-group">
@@ -103,6 +110,50 @@
       </div>
     </section>
 
+    <div class="modal fade" id="roleModal">
+        <div class="modal-dialog modal-sm">
+          <div class="modal-content">
+            <div class="modal-header">
+              <label for="">Tambahkan Event</label>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="form-group">
+                <label for="" class="">Title</label>
+                <input type="text" id="eventTitle" class="form-control" placeholder="What's the event?">
+              </div>
+              <div class="form-group">
+                <label for="">Date (Start - End)</label>
+                <div class="input-group">
+                    <input type="date" id="eventStart" class="form-control text-sm">
+                    <input type="date" id="eventEnd" class="form-control text-sm">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="">Role</label>
+                <select id="eventRole" class="form-control select2 w-100">
+                    <option value="all">── All Role ──</option>
+                    <?php foreach($role_user as $role): ?>
+                    <option value="<?= $role->role_name ?>"><?= $role->role_name ?></option>
+                    <?php endforeach; ?>
+                </select>
+              </div>
+              <input type="text" id="eventBackgroundColor" class="form-control" value="rgb(39, 0, 93)" hidden>
+              <input type="text" id="eventBorderColor" class="form-control" value="rgb(39, 0, 93)" hidden>
+              <input type="text" id="eventTextColor" class="form-control" value="rgb(255, 255, 255)" hidden>
+            </div>
+            <div class="modal-footer justify-content-between">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="button" id="saveEventRole" class="btn btn-primary" data-dismiss="modal">Simpan</button>
+            </div>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
 
 <script>
 $(document).ready(function() {
@@ -115,6 +166,7 @@ $(document).ready(function() {
 
     var currColor = '#007bff';
 
+    // Drag event ke calendar
     new Draggable(containerEl, {
         itemSelector: '.external-event',
         eventData: function(eventEl) {
@@ -127,11 +179,13 @@ $(document).ready(function() {
         }
     });
 
+    // Convert menjadi UTC+7
     function convertToUTCPlus7(date) {
         var utcTime = date.getTime() + (7 * 60 * 60 * 1000);
         return new Date(utcTime);
     }
 
+    // Saat ditampilkan, End date ditambah 1 hari
     function adjustEndDate(events) {
         events.forEach(function(event) {
             var endDate = new Date(event.end);
@@ -141,6 +195,7 @@ $(document).ready(function() {
         return events;
     }
 
+    // Bagian Calendar
     var calendar = new Calendar(calendarEl, {
         headerToolbar: {
             left: 'prev,next',
@@ -152,6 +207,8 @@ $(document).ready(function() {
         droppable: true,
         displayEventTime: false,
         height: 'auto',
+
+        // Menampilkan
         events: function(fetchInfo, successCallback, failureCallback) {
             $.ajax({
                 url : '<?= site_url('CalendarController/load_events') ?>',
@@ -167,6 +224,8 @@ $(document).ready(function() {
                 }
             });
         },
+
+        // Menambahkan
         drop: function(info) {
             var title = info.draggedEl.innerText.trim();
             if (title) {
@@ -179,51 +238,50 @@ $(document).ready(function() {
                 var endUTC7 = convertToUTCPlus7(end);
                 var id_user = '<?= htmlspecialchars($id_user ?? '', ENT_QUOTES, 'UTF-8'); ?>';
 
-                var eventId = 'evt-' + Math.random().toString(36).substr(2, 9);
+                var event = {
+                    title: title,
+                    start: startUTC7.toISOString(),
+                    end: endUTC7.toISOString(),
+                    backgroundColor: window.getComputedStyle(info.draggedEl, null).getPropertyValue('background-color'),
+                    borderColor: window.getComputedStyle(info.draggedEl, null).getPropertyValue('background-color'),
+                    textColor: window.getComputedStyle(info.draggedEl, null).getPropertyValue('color'),
+                    id_user: id_user,
+                    allDay: false
+                };
 
-                var existingEvents = calendar.getEvents();
-                var isDuplicate = existingEvents.some(event => event.title === title && event.startStr === startUTC7.toISOString());
+                $.ajax({
+                    url: '<?= site_url('CalendarController/add_event') ?>',
+                    method: 'POST',
+                    data: event,
+                    success: function(response) {
+                        response = JSON.parse(response);
+                        if (response.status === 'success') {
 
-                if (!isDuplicate) {
-                    var event = {
-                        id: eventId,
-                        title: title,
-                        start: startUTC7.toISOString(),
-                        end: endUTC7.toISOString(),
-                        backgroundColor: window.getComputedStyle(info.draggedEl, null).getPropertyValue('background-color'),
-                        borderColor: window.getComputedStyle(info.draggedEl, null).getPropertyValue('background-color'),
-                        textColor: window.getComputedStyle(info.draggedEl, null).getPropertyValue('color'),
-                        id_user: id_user,
-                        allDay: false
-                    };
-
-                    $.ajax({
-                        url: '<?= site_url('CalendarController/add_event') ?>',
-                        method: 'POST',
-                        data: event,
-                        success: function(response) {
-                            response = JSON.parse(response);
-                            if (response.status === 'success') {
-                                if (checkbox.checked) {
-                                    info.draggedEl.parentNode.removeChild(info.draggedEl);
-                                }
-                                toastr.success('Jadwal berhasil ditambahkan');
-                            } else {
-                                toastr.error('Gagal menambahkan jadwal');
+                            var updateEvent = calendar.getEventById(info.draggedEl.id);
+                            if (updateEvent) {
+                                updateEvent.setProp('id', response.id);
+                                updateEvent.setExtendedProp('id_user', id_user);
                             }
-                        },
-                        error: function() {
-                            toastr.error('Gagal menyimpan jadwal');
+
+                            if (checkbox.checked) {
+                                info.draggedEl.parentNode.removeChild(info.draggedEl);
+                            }
+                            toastr.success('Jadwal berhasil ditambahkan');
+                        } else {
+                            toastr.error('Gagal menambahkan jadwal');
                         }
-                    });
-                } else {
-                    alert('Event already exists.');
-                }
+                    },
+                    error: function() {
+                        toastr.error('Gagal menyimpan jadwal');
+                    }
+                });
             } else {
                 toastr.warning('Title tidak boleh kosong');
             }
         },
 
+
+        // Mengedit (Resize)
         eventResize: function(info) {
             var start = new Date(info.event.start);
             var end = new Date(info.event.end);
@@ -242,22 +300,29 @@ $(document).ready(function() {
                 borderColor: info.event.borderColor,
                 textColor: info.event.textColor,
                 id_user: id_user,
+                role: info.event.extendedProps.role || '',
                 allDay: false
             };
-            $.ajax({
-                url: '<?= site_url('CalendarController/update_event') ?>',
-                method: 'POST',
-                data: event,
-                success: function(response) {
-                    console.log('Event updated: ', response);
-                    toastr.success('Jadwal berhasil diubah');
-                },
-                error: function() {
-                    toastr.error('Gagal mengubah jadwal');
-                }
-            });
+            console.log('Event data before sending (resize)', event);
+            if (event.id && event.title && event.start) {
+                $.ajax({
+                    url: '<?= site_url('CalendarController/update_event') ?>',
+                    method: 'POST',
+                    data: event,
+                    success: function(response) {
+                        console.log('Event updated: ', response);
+                        toastr.success('Jadwal berhasil diubah');
+                    },
+                    error: function() {
+                        toastr.error('Gagal mengubah jadwal');
+                    }
+                });
+            } else {
+                toastr.error('Event ID, title, and start date cannot be empty');
+            }
         },
 
+        // Mengedit (Drop)
         eventDrop: function(info) {
             var start = new Date(info.event.start);
             var end = new Date(info.event.end);
@@ -276,23 +341,30 @@ $(document).ready(function() {
                 borderColor: info.event.borderColor,
                 textColor: info.event.textColor,
                 id_user: id_user,
+                role: info.event.extendedProps.role || '',
                 allDay: false
             };
             console.log("Event data before sending (drop): ", event);
-            $.ajax({
-                url: '<?= site_url('CalendarController/update_event') ?>',
-                method: 'POST',
-                data: event,
-                success: function(response) {
-                    console.log('Event updated: ', response);
-                    toastr.success('Jadwal berhasil diubah');
-                },
-                error: function() {
-                    toastr.error('Gagal mengubah jadwal');
-                }
-            });
+            
+            if (event.id && event.title && event.start) {
+                $.ajax({
+                    url: '<?= site_url('CalendarController/update_event') ?>',
+                    method: 'POST',
+                    data: event,
+                    success: function(response) {
+                        console.log('Event updated: ', response);
+                        toastr.success('Jadwal berhasil diubah');
+                    },
+                    error: function() {
+                        toastr.error('Gagal mengubah jadwal');
+                    }
+                });
+            } else {
+                toastr.error('Event ID, title, and start date cannot be empty')
+            }
         },
         
+        // Menghapus
         eventClick: function(info) {
             if (confirm('Are you sure you want to delete this event?')) {
                 $.ajax({
@@ -309,10 +381,85 @@ $(document).ready(function() {
                 });
             }
         }
+
+        
+    });
+
+    $('#saveEventRole').on('click', function(e) {
+            e.preventDefault();
+
+            var eventTitle = $('#eventTitle').val();
+            var eventStart = $('#eventStart').val();
+            var eventEnd = $('#eventEnd').val();
+            var eventRole = $('#eventRole').val();
+            var eventBackgroundColor = $('#eventBackgroundColor').val();
+            var eventBorderColor = $('#eventBorderColor').val();
+            var eventTextColor = $('#eventTextColor').val();
+            var eventIDUser = "<?= htmlspecialchars($id_user ?? '', ENT_QUOTES, 'UTF-8'); ?>";
+
+            var adjustedEndDate = new Date(eventEnd);
+            adjustedEndDate.setDate(adjustedEndDate.getDate() + 1);
+
+            var eventData = {
+                title: eventTitle,
+                start: eventStart,
+                end: eventEnd,
+                role: eventRole,
+                backgroundColor: eventBackgroundColor,
+                borderColor: eventBorderColor,
+                textColor: eventTextColor,
+                id_user: eventIDUser,
+            };
+
+            $.ajax({
+                url: '<?= site_url("CalendarController/add_event_role") ?>',
+                type: 'POST',
+                data: eventData,
+                success: function(response) {
+                    response = JSON.parse(response);
+                    if (response.status === 'success') {
+                        console.log('Event berhasil ditambahkan', response);
+
+                        var newEvent = {
+                            id: response.id,
+                            title: eventTitle,
+                            start: eventStart,
+                            end: adjustedEndDate.toISOString().slice(0, 10),
+                            backgroundColor: eventBackgroundColor,
+                            borderColor: eventBorderColor,
+                            textColor: eventTextColor,
+                            extendedProps: {
+                                role: eventRole,
+                            }
+                        };
+
+                        console.log(newEvent);
+
+                        calendar.addEvent(newEvent);
+
+                        event.extendedProps = newEvent.extendedProps;
+
+                        $('#eventTitle').val('');
+                        $('#eventStart').val('');
+                        $('#eventEnd').val('');
+                        $('#eventRole').val('all');
+
+                        toastr.success('Jadwal berhasil ditambahkan');
+                    } else {
+                        toastr.error('Gagal menambahkan jadwal');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.log('Error', error)
+                    toastr.error('Gagal menambahkan jadwal');
+                }
+            });
+        
     });
 
     calendar.render();
 
+    // Pilih warna untuk list event
     $('#color-chooser > li > a').click(function(e) {
         e.preventDefault();
         currColor = $(this).css('color');
@@ -325,6 +472,7 @@ $(document).ready(function() {
         });
     });
 
+    // Menambahkan list event
     $('#add-new-event').click(function() {
         var val = $('#new-event').val().trim();
         if (val.length === 0) {
@@ -344,6 +492,37 @@ $(document).ready(function() {
 
     });
 });
+</script>
+
+<script>
+    $(document).ready(function() {
+        $('#eventRole option').each(function() {
+            var text = $(this).text();
+            var capitalizedText = text.replace(/\b\w/g, function(letter) {
+                return letter.toUpperCase();
+            });
+            $(this).text(capitalizedText);
+        });
+
+        $('#eventRole').on('change', function() {
+            var selectedVal = $('#eventRole option:selected').val();
+            var backgroundColor = $('#eventBackgroundColor');
+            var borderColor = $('#eventBorderColor');
+            var textColor = $('#eventTextColor');
+
+            if (selectedVal === 'all') {
+                backgroundColor.val('rgb(39, 0, 93)');
+                borderColor.val('rgb(39, 0, 93)');
+                textColor.val('rgb(255, 255, 255)');
+            } else {
+                backgroundColor.val('rgb(102, 16, 242)');
+                borderColor.val('rgb(102, 16, 242)');
+                textColor.val('rgb(255, 255, 255)');
+            }
+        });
+
+        
+    });
 </script>
 
 

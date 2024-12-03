@@ -17,4 +17,10 @@ class UserRoleModel extends CI_Model
         return ['role_name'];
     }
 
+    public function find()
+    {
+        $query = $this->db->get($this->table);
+        return $query->result();
+    }
+
 }

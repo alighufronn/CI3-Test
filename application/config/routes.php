@@ -71,3 +71,5 @@ $route['CalendarController/load_events'] = 'CalendarController/load_events';
 $route['CalendarController/add_event'] = 'CalendarController/add_event';
 $route['CalendarController/update_event'] = 'CalendarController/update_event';
 $route['CalendarController/delete_event'] = 'CalendarController/delete_event';
+
+$route['CalendarController/add_event_role'] = 'CalendarController/add_event_role';
