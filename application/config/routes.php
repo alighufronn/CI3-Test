@@ -63,7 +63,12 @@ $route['login/login_process'] = 'UserController/login_process';
 
 
 // Admin
-$route['users'] = 'UserController/users';
+$route['users'] = 'UserController/index';
+$route['UserController/add_user'] = 'UserController/add_user';
+$route['UserController/load_users'] = 'UserController/load_users';
+$route['UserController/delete_user'] = 'UserController/delete_user';
+$route['UserController/get_users'] = 'UserController/get_users';
+$route['UserController/edit_user'] = 'UserController/edit_user';
 
 // Calendar
 $route['calendar'] = 'CalendarController/index';

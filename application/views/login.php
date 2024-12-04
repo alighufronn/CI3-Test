@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="<?= base_url('assets/AdminLTE/plugins/icheck-bootstrap/icheck-bootstrap.min.css')?>">
   <!-- Theme style -->
   <link rel="stylesheet" href="<?= base_url('assets/AdminLTE/dist/css/adminlte.min.css')?>">
+  <script src="<?= base_url('assets/AdminLTE/plugins/jquery/jquery.min.js') ?>"></script>
 </head>
 <body class="hold-transition login-page">
 <div class="login-box">
@@ -24,9 +25,9 @@
     <div class="card-body login-card-body">
       <p class="login-box-msg">Sign in to start your session</p>
 
-      <form action="<?= site_url('login/login_process') ?>" method="post">
+      <form id="loginForm" action="<?= site_url('login/login_process') ?>" method="post">
         <div class="input-group mb-3">
-          <input type="text" class="form-control" placeholder="Username" name="username">
+          <input type="text" class="form-control" placeholder="Username" name="username" id="username">
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-user"></span>
@@ -34,7 +35,7 @@
           </div>
         </div>
         <div class="input-group mb-3">
-          <input type="password" class="form-control" placeholder="Password" name="password">
+          <input type="password" class="form-control" placeholder="Password" name="password" id="password">
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-lock"></span>
@@ -62,6 +63,37 @@
   </div>
 </div>
 <!-- /.login-box -->
+
+
+<script>
+  $(document).ready(function() {
+
+    if (localStorage.getItem('username') && localStorage.getItem('password')) {
+      $('#username').val(localStorage.getItem('username'));
+      $('#password').val(localStorage.getItem('password'));
+      $('#remember').prop('checked', true);
+    }
+
+    $('#remember').on('change', function() {
+      if ($(this).is(':checked')) {
+        // Add
+        localStorage.setItem('username', $('#username').val());
+        localStorage.setItem('password', $('#password').val());
+      } else {
+        // Remove
+        localStorage.removeItem('username');
+        localStorage.removeItem('password');
+      }
+    });
+
+    $('#loginForm').on('submit', function() {
+      if ($('#remember').is(':checked')) {
+        localStorage.setItem('username', $('#username').val());
+        localStorage.setItem('password', $('#password').val());
+      }
+    });
+  })
+</script>
 
 <!-- jQuery -->
 <script src="<?= base_url('assets/AdminLTE/plugins/jquery/jquery.min.js')?>"></script>

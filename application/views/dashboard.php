@@ -1,9 +1,12 @@
 <?php if($logged_in): ?>
-    <?php if($role === 'admin'): ?>
-        <p>Admin</p>
-    <?php elseif($role === 'guest'): ?>
-        <p>Guest</p>
-    <?php endif; ?>
-
+    
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title text-bold">Jadwal 7 hari kedepan</div>
+        </div>
+        <div class="card-body">
+            
+        </div>
+    </div>
 
 <?php endif; ?>

@@ -88,6 +88,12 @@ class CalendarModel extends CI_Model
         return $this->db->where('id', $id)->delete($this->table);
     }
 
+    public function delete_events_by_user($user_id)
+    {
+        $this->db->where('id_user', $user_id);
+        return $this->db->delete($this->table);
+    }
+
     // public function get_events($id_user)
     // {
     //     $this->db->where('id_user', $id_user);

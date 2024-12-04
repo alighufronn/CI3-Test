@@ -40,13 +40,27 @@ class UserModel extends CI_Model
 
     public function insert($data)
     {
-        return $this->db->insert($this->table, $data);
+        $this->db->insert($this->table, $data);
+        return $this->db->insert_id();
+    }
+
+    public function username_exists($username)
+    {
+        $this->db->where('username', $username);
+        $query = $this->db->get($this->table);
+        return $query->num_rows() > 0;
+    }
+
+    public function get_user_by_id($id)
+    {
+        $this->db->where('id', $id);
+        $query = $this->db->get($this->table);
+        return $query->row_array();
     }
 
     public function delete($id)
     {
         $this->db->where('id', $id);
-
         return $this->db->delete($this->table);
     }
 
@@ -63,6 +77,12 @@ class UserModel extends CI_Model
     public function findUser()
     {
         return $this->db->get($this->table)->result();
+    }
+
+    public function get_users()
+    {
+        $query = $this->db->get($this->table);
+        return $query->result_array();
     }
 
     public function update($id, $data)

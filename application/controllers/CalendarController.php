@@ -19,7 +19,6 @@ class CalendarController extends CI_Controller
             return;
         }
 
-
         $data['logged_in'] = $this->session->userdata('logged_in');
         $data['name'] = $this->session->userdata('name');
         $data['id_user'] = $this->session->userdata('user_id');

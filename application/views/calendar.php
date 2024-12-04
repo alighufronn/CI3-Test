@@ -229,14 +229,6 @@ $(document).ready(function() {
                 }
             });
         },
-        // events: {
-        //     url: '<?= site_url("CalendarController/load_events") ?>',
-        //     method: 'GET',
-        //     extraParams: {
-        //         id_user: '<?= $this->session->userdata("user_id") ?>',
-        //         role: userRole,
-        //     },
-        // },
 
         // Menambahkan
         drop: function(info) {
@@ -334,7 +326,7 @@ $(document).ready(function() {
                     icon: 'error',
                     title: 'Kamu tidak memiliki akses untuk mengedit event ini',
                 });
-                return;
+                info.revert();
             } else {
                 if (event.id && event.title && event.start) {
                     $.ajax({
@@ -391,9 +383,9 @@ $(document).ready(function() {
             if (info.event.extendedProps.role && userRole !== 'admin') {
                 Toast.fire({
                     icon: 'error',
-                    title: 'Kamu tidak memiliki akses untuk mengubah jadwal ini',
+                    title: 'Kamu tidak memiliki akses untuk mengedit event ini',
                 });
-                return;
+                info.revert();
             } else {
                 if (event.id && event.title && event.start) {
                     $.ajax({
@@ -425,13 +417,13 @@ $(document).ready(function() {
         
         // Menghapus
         eventClick: function(info) {
-            if (info.event.extendedProps.role && userRole !== 'admin') {
-                Toast.fire({
-                    icon: 'error',
-                    title: 'Kamu tidak memiliki akses untuk menghapus event ini',
-                });
-            } else {
-                if (confirm('Are you sure you want to delete this event?')) {
+            if (confirm('Apakah kamu yakin ingin menghapus event ini?')) {
+                if (info.event.extendedProps.role && userRole !== 'admin') {
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'Kamu tidak memiliki akses untuk menghapus event ini',
+                    });
+                } else {
                     $.ajax({
                         url: '<?= site_url('CalendarController/delete_event') ?>',
                         method: 'POST',
