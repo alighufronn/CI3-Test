@@ -16,4 +16,20 @@ class ChatModel extends CI_Model
     {
         return ['id_sender', 'name_sender', 'message', 'id_receiver', 'name_receiver', 'date', 'time'];
     }
+
+    public function get_by_sender_id($id_sender)
+    {
+        $this->db->where('id_sender', $id_sender);
+        $query = $this->db->get($this->table);
+
+        return $query->result_array();
+    }
+
+    public function get_by_receiver_id($id_receiver)
+    {
+        $this->db->where('id_receiver', $id_receiver);
+        $query = $this->db->get($this->table);
+
+        return $query->result_array();
+    }
 }

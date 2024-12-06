@@ -24,10 +24,23 @@ class ChatController extends CI_Controller
         $data['username'] = $this->session->userdata('username');
         $data['role'] = $this->session->userdata('role');
         $data['id_user'] = $this->session->userdata('user_id');
-        $data['title'] = 'To Do List';
-        $data['pageTitle'] = 'To Do List';
-        $data['content'] = $this->load->view('todolist', $data, true);
+        $data['title'] = 'Chat';
+        $data['pageTitle'] = 'Chit Chat';
+        $data['content'] = $this->load->view('chat', $data, true);
 
         $this->load->view('layout/page_layout', $data);
+    }
+
+    public function load_chats()
+    {
+        if (!$this->session->userdata('logged_in')) {
+            redirect('login');
+            return;
+        }
+
+        $id_sender = $this->session->userdata('user_id');
+
+        $chatSent = $this->ChatModel->get_sender_by_id($id_sender);
+        echo json_encode(array('status' => 'success', 'chats' => $chatSent));
     }
 }

@@ -157,6 +157,12 @@
               <p>To Do List</p>
             </a>
           </li>
+          <li class="nav-item">
+            <a href="<?= site_url('chat') ?>" class="nav-link">
+              <i class="nav-icon fas fa-circle"></i>
+              <p>Chat</p>
+            </a>
+          </li>
 
           <li class="nav-header">Settings</li>
           <?php if($role === 'admin'): ?>
