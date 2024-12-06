@@ -76,5 +76,15 @@ $route['CalendarController/load_events'] = 'CalendarController/load_events';
 $route['CalendarController/add_event'] = 'CalendarController/add_event';
 $route['CalendarController/update_event'] = 'CalendarController/update_event';
 $route['CalendarController/delete_event'] = 'CalendarController/delete_event';
-
 $route['CalendarController/add_event_role'] = 'CalendarController/add_event_role';
+
+// To Do List
+$route['todo'] = 'todoController/index';
+$route['todoController/loads'] = 'todoController/loads';
+$route['todoController/add_todo'] = 'todoController/add_todo';
+$route['todoController/update_todo'] = 'todoController/update_todo';
+$route['todoController/delete_todo'] = 'todoController/delete_todo';
+$route['todoController/get_todo'] = 'todoController/get_todo';
+
+// Chat
+$route['chat'] = 'ChatController/index';

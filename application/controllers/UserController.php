@@ -37,6 +37,7 @@ class UserController extends CI_Controller {
             redirect('/');
         } else {
             redirect('login');
+            
         }
     }
 
@@ -48,6 +49,7 @@ class UserController extends CI_Controller {
         $this->session->unset_userdata('username');
         $this->session->unset_userdata('role');
         $this->session->unset_userdata('user_id');
+        
         redirect('/login');
     }
 

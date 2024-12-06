@@ -3,7 +3,6 @@
         .selected-row {
             background-color: #3c8dbc !important;
             color: #fff;
-            transition: 1s;
         }
     </style>
 
@@ -53,7 +52,7 @@
                   <div class="form-group">
                     <label for="">Role</label>
                     <select id="roleUser" class="form-control select2 w-100">
-                        <option value="" disabled selected>─── Select Role ──</option>
+                        <option value="" disabled selected>── Select Role ──</option>
     
                         <?php foreach($roles as $role): ?>
                             <option value="<?= $role->role_name ?>"><?= $role->role_name ?></option>
@@ -84,7 +83,7 @@
         <div class="modal-dialog modal-sm">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title text-bold">Tambah User</h5>
+              <h5 class="modal-title text-bold">Edit User</h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
@@ -99,7 +98,7 @@
                   <div class="form-group">
                     <label for="">Role</label>
                     <select id="roleUserEdit" class="form-control select2 w-100">
-                        <option value="" disabled>─── Select Role ──</option>
+                        <option value="" disabled>──     Select Role ──</option>
     
                         <?php foreach($roles as $role): ?>
                             <option value="<?= $role->role_name ?>"><?= $role->role_name ?></option>

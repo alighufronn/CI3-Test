@@ -199,10 +199,11 @@ $(document).ready(function() {
     // Bagian Calendar
     var calendar = new Calendar(calendarEl, {
         headerToolbar: {
-            left: 'prev,next',
+            left: 'prev,next today',
             center: 'title',
-            right: 'today'
+            right: 'dayGridMonth,listMonth'
         },
+        themeSystem: 'bootstrap',
         firstDay: 1,
         editable: true,
         droppable: true,
@@ -251,7 +252,7 @@ $(document).ready(function() {
                     borderColor: window.getComputedStyle(info.draggedEl, null).getPropertyValue('background-color'),
                     textColor: window.getComputedStyle(info.draggedEl, null).getPropertyValue('color'),
                     id_user: id_user,
-                    allDay: false
+                    allDay: true,
                 };
 
                 $.ajax({
@@ -317,7 +318,7 @@ $(document).ready(function() {
                 textColor: info.event.textColor,
                 id_user: id_user,
                 role: info.event.extendedProps.role || '',
-                allDay: false
+                allDay: true,
             };
             console.log('Event data before sending (resize)', event);
             
@@ -376,7 +377,7 @@ $(document).ready(function() {
                 textColor: info.event.textColor,
                 id_user: id_user,
                 role: info.event.extendedProps.role || '',
-                allDay: false
+                allDay: true,
             };
             console.log("Event data before sending (drop): ", event);
             

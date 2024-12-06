@@ -14,6 +14,8 @@
   <!-- Theme style -->
   <link rel="stylesheet" href="<?= base_url('assets/AdminLTE/dist/css/adminlte.min.css')?>">
   <script src="<?= base_url('assets/AdminLTE/plugins/jquery/jquery.min.js') ?>"></script>
+
+
 </head>
 <body class="hold-transition login-page">
 <div class="login-box">
@@ -92,6 +94,9 @@
         localStorage.setItem('password', $('#password').val());
       }
     });
+
+
+    
   })
 </script>
 
