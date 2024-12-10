@@ -88,3 +88,8 @@ $route['todoController/get_todo'] = 'todoController/get_todo';
 
 // Chat
 $route['chat'] = 'ChatController/index';
+$route['ChatController/load_chats'] = 'ChatController/load_chats';
+$route['ChatController/load_chats_with_user'] = 'ChatController/load_chats_with_user';
+$route['ChatController/load_users'] = 'ChatController/load_users';
+$route['ChatController/receive_chats'] = 'ChatController/receive_chats';
+$route['ChatController/send_chat'] = 'ChatController/send_chat';

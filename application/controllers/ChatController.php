@@ -31,16 +31,91 @@ class ChatController extends CI_Controller
         $this->load->view('layout/page_layout', $data);
     }
 
-    public function load_chats()
+    public function load_users()
     {
         if (!$this->session->userdata('logged_in')) {
             redirect('login');
             return;
         }
 
-        $id_sender = $this->session->userdata('user_id');
+        $users = $this->UserModel->get_users();
+        echo json_encode($users);
+    }
 
-        $chatSent = $this->ChatModel->get_sender_by_id($id_sender);
-        echo json_encode(array('status' => 'success', 'chats' => $chatSent));
+    // public function load_chats()
+    // {
+    //     if (!$this->session->userdata('logged_in')) {
+    //         redirect('login');
+    //         return;
+    //     }
+
+    //     $user_id = $this->session->userdata('user_id');
+        
+    //     $getChat = $this->ChatModel->get_chat_by_id($user_id);
+
+    //     if ($getChat) {
+    //         echo json_encode(array('status' => 'success', 'chats' => $getChat));
+    //     } else {
+    //         echo json_encode(array('status' => 'error', 'message' => 'Gagal mengambil data chat.'));
+    //     }
+    // }
+
+    public function load_chats_with_user()
+    {
+        if (!$this->session->userdata('logged_in')) {
+            redirect('login');
+            return;
+        }
+
+        $current_user_id = $this->session->userdata('user_id');
+        $other_user_id = $this->input->get('user_id');
+
+        $getUser = $this->ChatModel->get_chat_sender_receiver($current_user_id, $other_user_id);
+
+        if ($getUser) {
+            echo json_encode(array('status' => 'success', 'chats' => $getUser));
+        } else {
+            echo json_encode(array('status' => 'success', 'chats' => []));
+        }
+    }
+
+    public function send_chat()
+    {
+        if (!$this->session->userdata('logged_in')) {
+            redirect('login');
+            return;
+        }
+
+        $message = $this->input->post('message');
+
+        if (empty($message)) {
+            return;
+        }
+
+        $id = $this->input->post('id');
+        $id_sender = $this->input->post('id_sender');
+        $name_sender = $this->input->post('name_sender');
+        $id_receiver = $this->input->post('id_receiver');
+        $name_receiver = $this->input->post('name_receiver');
+        $date = $this->input->post('date');
+        $time = $this->input->post('time');
+        
+        $data = array(
+            'id_sender' => $id_sender,
+            'name_sender' => $name_sender,
+            'message' => $message,
+            'id_receiver' => $id_receiver,
+            'name_receiver' => $name_receiver,
+            'date' => $date,
+            'time' => $time,
+        );
+
+        $sending = $this->ChatModel->send($data);
+
+        if ($sending) {
+            echo json_encode(array('status' => 'success', 'chats' => $data, 'message' => 'Pesan berhasil dikirim'));
+        } else {
+            echo json_encode(array('status' => 'error', 'message' => 'Gagal mengirim pesan'));
+        }
     }
 }
