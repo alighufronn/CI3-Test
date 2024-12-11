@@ -112,10 +112,25 @@ class ChatController extends CI_Controller
 
         $sending = $this->ChatModel->send($data);
 
-        if ($sending) {
-            echo json_encode(array('status' => 'success', 'chats' => $data, 'message' => 'Pesan berhasil dikirim'));
+        $sent = $this->ChatModel->get_chat_by_id($sending);
+
+        if ($sent) {
+            echo json_encode(array('status' => 'success', 'chats' => $sent, 'message' => 'Pesan berhasil dikirim'));
         } else {
             echo json_encode(array('status' => 'error', 'message' => 'Gagal mengirim pesan'));
+        }
+    }
+
+    public function delete_chat()
+    {
+        $id = $this->input->post('id');
+
+        $deleteChat = $this->ChatModel->delete($id);
+
+        if ($deleteChat) {
+            echo json_encode(array('status' => 'success', 'chats' => $deleteChat, 'message' => 'Pesan berhasil dihapus'));
+        } else {
+            echo json_encode(array('status' => 'error', 'message' => 'Gagal menghapus pesan'));
         }
     }
 }

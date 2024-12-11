@@ -9,6 +9,9 @@
     padding: 20px;
     font-size: 16px;
   }
+  .direct-chat-text {
+    cursor: pointer;
+  }
 </style>
 
 <span class="test">Test: </span>
@@ -61,10 +64,10 @@
     <div class="col-3"></div>
 </div>
 
-
 <script>
     $(document).ready(function() 
     {
+      // Mengambil data user
         function load_users()
         {
           $.ajax({
@@ -80,6 +83,7 @@
           })
         }
 
+        // Menampilkan list user
         function renderUsers(users)
         {
           var listUsers = $('.contacts-list');
@@ -90,6 +94,7 @@
             if (user.id !== currentId) {
               var list =`
                   <li class="user-list" data-user-id="${user.id}">
+                      <img class="contacts-list-img" src="<?= base_url('assets/AdminLTE/dist/img/avatar5.png') ?>" alt="${user.name} Avatar">
                       <div class="contacts-list-info">
                         <span class="contacts-list-name">
                           ${user.name}
@@ -104,6 +109,7 @@
           });
         }
 
+        // Menampilkan chat berdasarkan klik user
         $('.contacts-list').on('click', '.user-list', function() 
         {
             $('.user-list').removeClass('selected');
@@ -138,6 +144,7 @@
         //     })
         // }
 
+        // Mengambil data chat
         function loadChatsWithUser(userId, userName)
         {
           $.ajax({
@@ -158,6 +165,7 @@
           });
         }
 
+        // Menampilkan chat
         function renderChats(chats, isNewMessage = false)
         {
           var chatColumn = $('.chatColumn');
@@ -179,7 +187,7 @@
               var messageClass = chat.id_sender === currentUser ? 'right chatSender' : 'chatReceiver';
 
               var message = `
-                  <div class="direct-chat-msg ${messageClass}">
+                  <div class="direct-chat-msg ${messageClass}" data-id-sender="${chat.id_sender}">
                     <div class="direct-chat-infos clearfix" data-id="${chat.id}">
                         <span class="direct-chat-name ${messageClass === 'right chatSender' ? 'float-right' : 'float-left'}">${chat.name_sender}</span>
                         <span class="direct-chat-timestamp ${messageClass === 'right chatSender' ? 'float-left' : 'float-right'}">${chat.date} ${time}</span>
@@ -200,12 +208,37 @@
           });
         }
 
+        // Show/Hide button action
+        $(document).on('click', '.direct-chat-text', function() {
+            var currentUser = '<?= htmlspecialchars($id_user ?? '', ENT_QUOTES, 'UTF-8'); ?>';
+            var chatAction = $(this).next('.chatAction');
+
+            var idSender = $(this).closest('.direct-chat-msg').data('id-sender');
+            console.log('idSender: ', idSender, 'curentUser: ', currentUser);
+
+            idSender = parseInt(idSender);
+            currentUser = parseInt(currentUser);
+
+            if (idSender === currentUser) {
+              console.log('Condition: idSender === currentUser');
+
+              var isHidden = chatAction.prop('hidden');
+              // console.log('isHidden: ', isHidden);
+              chatAction.prop('hidden', !isHidden);
+              // console.log('New hidden status: ', chatAction.prop('hidden'));
+            } else {
+              console.log('Condition: idSender !== currentUser');
+            }
+        });
+
+        // Auto scroll paling bawah
         function scrollToBottom()
         {
           var chatColumn = $('.chatColumn');
           chatColumn.scrollTop(chatColumn.prop('scrollHeight'));
         }
   
+        // Mengirim pesan
         $('#btnSend').on('click', function(e) 
         {
             e.preventDefault();
@@ -218,8 +251,6 @@
 
             var receiverId = $('.user-list.selected').data('user-id');
             var receiverName = $('.user-list.selected').find('.contacts-list-name').text().trim();
-
-            
 
             var sendMessage = {
               message: message,
@@ -253,8 +284,37 @@
             });
         });
 
+        // Menghapus pesan
+        $(document).on('click', '.btnChatDelete', function() {
+            var chat = $(this).closest('.direct-chat-msg');
+            var dataId =  chat.find('.direct-chat-infos').data('id');
+
+            if (confirm('Ingin menghapus pesan ini?')) {
+              $.ajax({
+                url: '<?= site_url('ChatController/delete_chat') ?>',
+                method: 'POST',
+                data: {id: dataId},
+                success: function(response) {
+                  data = JSON.parse(response);
+                  console.log('ID: ', dataId);
+                  if (data.status === 'success') {
+                      renderChats([data.chats]);
+                      console.log(data.message);
+                  } else {
+                    console.log(data.message);
+                  }
+                },
+                error: function(xhr, status, error) {
+                  console.log('Pesan tidak ditemukan');
+                }
+              });
+            }
+        });
+
         loadChatsWithUser();
         load_users();
         // load_chats();
-    })
+    });
+
+    
 </script>

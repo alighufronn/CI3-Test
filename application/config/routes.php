@@ -93,3 +93,4 @@ $route['ChatController/load_chats_with_user'] = 'ChatController/load_chats_with_
 $route['ChatController/load_users'] = 'ChatController/load_users';
 $route['ChatController/receive_chats'] = 'ChatController/receive_chats';
 $route['ChatController/send_chat'] = 'ChatController/send_chat';
+$route['ChatController/delete_chat'] = 'ChatController/delete_chat';

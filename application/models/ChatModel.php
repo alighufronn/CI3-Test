@@ -37,19 +37,26 @@ class ChatModel extends CI_Model
     //     return $query->result_array();
     // }
 
-    public function get_chat_by_id($user_id)
+    public function get_chat_by_id($id)
     {
-        $this->db->group_start();
-        $this->db->where('id_sender', $user_id);
-        $this->db->or_where('id_receiver', $user_id);
-        $this->db->group_end();
-        $this->db->order_by('date', 'ASC');
-        $this->db->order_by('time', 'ASC');
-
+        $this->db->where('id', $id);
         $query = $this->db->get($this->table);
-
-        return $query->result_array();
+        return $query->row_array();
     }
+
+    // public function get_chat_by_id($user_id)
+    // {
+    //     $this->db->group_start();
+    //     $this->db->where('id_sender', $user_id);
+    //     $this->db->or_where('id_receiver', $user_id);
+    //     $this->db->group_end();
+    //     $this->db->order_by('date', 'ASC');
+    //     $this->db->order_by('time', 'ASC');
+
+    //     $query = $this->db->get($this->table);
+
+    //     return $query->result_array();
+    // }
 
     public function get_chat_sender_receiver($current_user_id, $other_user_id)
     {
@@ -76,5 +83,11 @@ class ChatModel extends CI_Model
         $this->db->insert($this->table, $data);
 
         return $this->db->insert_id();
+    }
+
+    public function delete($id)
+    {
+        $this->db->where('id', $id);
+        return $this->db->delete($this->table);
     }
 }
