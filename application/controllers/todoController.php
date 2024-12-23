@@ -136,4 +136,43 @@ class todoController extends CI_Controller
             echo json_encode(array('status' => 'error', 'message' => 'Gagal menghapus data'));
         }
     }
+
+    public function todo_count()
+    {
+        $user_id = $this->session->userdata('user_id');
+
+        $todo_count = $this->todoModel->count_by_todo($user_id);
+
+        if ($todo_count) {
+            echo json_encode(array('status' => 'success', 'todo_count' => $todo_count, 'message' => 'Jumlah To Do ditampilkan'));
+        } else {
+            echo json_encode(array('status' => 'error', 'message' => 'Tidak dapat menghitung jumlah To Do'));
+        }
+    }
+
+    public function progress_count()
+    {
+        $user_id = $this->session->userdata('user_id');
+
+        $progress_count = $this->todoModel->count_by_progress($user_id);
+
+        if ($progress_count) {
+            echo json_encode(array('status' => 'success', 'progress_count' => $progress_count, 'message' => 'Jumlah In Progress ditampilkan'));
+        } else {
+            echo json_encode(array('status' => 'error', 'message' => 'Tidak dapat menghitung jumlah In Progress'));
+        }
+    }
+
+    public function done_count()
+    {
+        $user_id = $this->session->userdata('user_id');
+
+        $done_count = $this->todoModel->count_by_done($user_id);
+
+        if ($done_count) {
+            echo json_encode(array('status' => 'success', 'done_count' => $done_count, 'message' => 'Jumlah Done ditampilkan'));
+        } else {
+            echo json_encode(array('status' => 'error', 'message' => 'Tidak dapat menghitung jumlah Done'));
+        }
+    }
 }

@@ -121,6 +121,25 @@ class ChatController extends CI_Controller
         }
     }
 
+    public function edit_chat()
+    {
+        $id = $this->input->post('id');
+        $message = $this->input->post('message');
+
+        $data = array(
+            'message' => $message,
+        );
+
+        $edit = $this->ChatModel->update($id, $data);
+
+        if ($edit) {
+            $edited = $this->ChatModel->get_chat_by_id($id);
+            echo json_encode(array('status' => 'success', 'chats' => $edited));
+        } else {
+            echo json_encode(array('status' => 'error', 'message' => 'Gagal mengirim kembali pesan'));
+        }
+    }
+
     public function delete_chat()
     {
         $id = $this->input->post('id');

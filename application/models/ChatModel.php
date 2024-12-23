@@ -85,9 +85,21 @@ class ChatModel extends CI_Model
         return $this->db->insert_id();
     }
 
+    public function update($id, $data)
+    {
+        $this->db->where('id', $id);
+        return $this->db->update($this->table, $data);
+    }
+
     public function delete($id)
     {
         $this->db->where('id', $id);
         return $this->db->delete($this->table);
+    }
+
+    public function count_chat_by_sender($user_id)
+    {
+        $this->db->where('id_sender', $user_id);
+        return $this->db->count_all_results($this->table);
     }
 }

@@ -82,7 +82,6 @@ class UserController extends CI_Controller {
         $this->load->view('layout/page_layout', $data);
     }
 
-
     public function load_users()
     {
         if (!$this->session->userdata('logged_in')) {

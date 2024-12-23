@@ -55,6 +55,10 @@ $route['translate_uri_dashes'] = FALSE;
 // Dashboard
 $route['default_controller'] = 'DashboardController';
 $route['dashboard'] = 'DashboardController/index';
+$route['DashboardController/users_count'] = 'DashboardController/users_count';
+$route['DashboardController/events_count'] = 'DashboardController/events_count';
+$route['DashboardController/chats_count'] = 'DashboardController/chats_count';
+$route['DashboardController/todos_count'] = 'DashboardController/todos_count';
 
 // Auth
 $route['login'] = 'UserController/login';
@@ -85,6 +89,9 @@ $route['todoController/add_todo'] = 'todoController/add_todo';
 $route['todoController/update_todo'] = 'todoController/update_todo';
 $route['todoController/delete_todo'] = 'todoController/delete_todo';
 $route['todoController/get_todo'] = 'todoController/get_todo';
+$route['todoController/todo_count'] = 'todoController/todo_count';
+$route['todoController/progress_count'] = 'todoController/progress_count';
+$route['todoController/done_count'] = 'todoController/done_count';
 
 // Chat
 $route['chat'] = 'ChatController/index';
@@ -93,4 +100,5 @@ $route['ChatController/load_chats_with_user'] = 'ChatController/load_chats_with_
 $route['ChatController/load_users'] = 'ChatController/load_users';
 $route['ChatController/receive_chats'] = 'ChatController/receive_chats';
 $route['ChatController/send_chat'] = 'ChatController/send_chat';
+$route['ChatController/edit_chat'] = 'ChatController/edit_chat';
 $route['ChatController/delete_chat'] = 'ChatController/delete_chat';

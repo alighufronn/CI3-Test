@@ -5,70 +5,100 @@
 </style>
 
 <div class="row">
+  <div class="col-md-4 col-sm-6 col-12 todo">
+    <div class="info-box">
+      <span class="info-box-icon bg-gradient-primary"><i class="fas fa-tasks"></i></span>
+      <div class="info-box-content">
+        <span class="info-box-text">To Do</span>
+        <span class="info-box-number todo-count">-</span>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 col-sm-6 col-12 inprogress">
+    <div class="info-box">
+      <span class="info-box-icon bg-gradient-info"><i class="fas fa-hourglass-half"></i></span>
+      <div class="info-box-content">
+        <span class="info-box-text">In Progress</span>
+        <span class="info-box-number inprogress-count">-</span>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 col-sm-6 col-12 done">
+    <div class="info-box">
+      <span class="info-box-icon bg-gradient-success"><i class="fas fa-check"></i></span>
+      <div class="info-box-content">
+        <span class="info-box-text">Done</span>
+        <span class="info-box-number done-count">-</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
     <!-- To Do -->
     <div class="col-md-6">
-            <div class="card">
-              <div class="card-header bg-gradient-primary">
-                <h3 class="card-title">
-                  <i class="ion ion-clipboard mr-1"></i>
-                  To Do
-                </h3>
+      <div class="card">
+        <div class="card-header bg-gradient-primary">
+          <h3 class="card-title">
+            <i class="ion ion-clipboard mr-1"></i>
+            To Do
+          </h3>
 
-                <div class="card-tools">
-                    <button type="button" class="btn btn-tool text-white" data-card-widget="collapse"><i class="fas fa-minus"></i>
-                </div>
-              </div>
-              <div class="card-body">
-                <ul class="todo-list" id="todoList" data-widget="todo-list">
-                  <li class="empty-placeholder"></li>
-                </ul>
-              </div>
-              <div class="card-footer clearfix">
-                <button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#todoAdd"><i class="fas fa-plus"></i> Add item</button>
-              </div>
-            </div>
+          <div class="card-tools">
+              <button type="button" class="btn btn-tool text-white" data-card-widget="collapse"><i class="fas fa-minus"></i>
+          </div>
+        </div>
+        <div class="card-body">
+          <ul class="todo-list" id="todoList" data-widget="todo-list">
+            <li class="empty-placeholder"></li>
+          </ul>
+        </div>
+        <div class="card-footer clearfix">
+          <button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#todoAdd"><i class="fas fa-plus"></i> Add item</button>
+        </div>
+      </div>
     </div>
 
     <!-- In Progress -->
     <div class="col-md-6">
-            <div class="card">
-              <div class="card-header bg-gradient-info">
-                <h3 class="card-title">
-                  <i class="ion ion-clipboard mr-1"></i>
-                  In Progress
-                </h3>
+      <div class="card">
+        <div class="card-header bg-gradient-info">
+          <h3 class="card-title">
+            <i class="ion ion-clipboard mr-1"></i>
+            In Progress
+          </h3>
 
-                <div class="card-tools">
-                    <button type="button" class="btn btn-tool text-white" data-card-widget="collapse"><i class="fas fa-minus"></i>
-                </div>
-              </div>
-              <div class="card-body">
-                <ul class="todo-list" id="inProgress" data-widget="todo-list">
+          <div class="card-tools">
+              <button type="button" class="btn btn-tool text-white" data-card-widget="collapse"><i class="fas fa-minus"></i>
+          </div>
+        </div>
+        <div class="card-body">
+          <ul class="todo-list" id="inProgress" data-widget="todo-list">
                   
-                  <li class="empty-placeholder"></li>
-                </ul>
-              </div>
-            </div>
+            <li class="empty-placeholder"></li>
+          </ul>
+        </div>
+      </div>
     </div>
 </div>
 
-            <div class="card">
-              <div class="card-header bg-gradient-success">
-                <h3 class="card-title">
-                  <i class="ion ion-clipboard mr-1"></i>
-                  Done
-                </h3>
+<div class="card">
+  <div class="card-header bg-gradient-success">
+    <h3 class="card-title">
+      <i class="ion ion-clipboard mr-1"></i>
+      Done
+    </h3>
 
-                <div class="card-tools">
-                    <button type="button" class="btn btn-tool text-white" data-card-widget="collapse"><i class="fas fa-minus"></i>
-                </div>
-              </div>
-              <div class="card-body">
-                <ul class="todo-list" id="done" data-widget="todo-list">
-                  <li class="empty-placeholder"></li>
-                </ul>
-              </div>
-            </div>
+    <div class="card-tools">
+        <button type="button" class="btn btn-tool text-white" data-card-widget="collapse"><i class="fas fa-minus"></i>
+    </div>
+  </div>
+  <div class="card-body">
+    <ul class="todo-list" id="done" data-widget="todo-list">
+      <li class="empty-placeholder"></li>
+    </ul>
+  </div>
+</div>
 
 
 
@@ -126,8 +156,6 @@
               </div>
             </div>
 
-
-
 <script>
 $(document).ready(function() {
     var Toast = Swal.mixin({
@@ -136,6 +164,65 @@ $(document).ready(function() {
         showConfirmButton: false,
         timer: 3000,
     });
+
+    // Menghitung jumlah
+    function loadTodoCount() 
+    {
+      $.ajax({
+        url: '<?= site_url('todoController/todo_count') ?>',
+        method: 'GET',
+        success: function(response) {
+          response = JSON.parse(response);
+          if (response.status === 'success') {
+            console.log('Response: ', response.message);
+            $('.todo-count').text(response.todo_count)
+          } else {
+            $('.todo-count').text('0');
+          }
+        },
+        error: function(xhr, status, error) {
+          console.error('Error: ', error);
+        }
+      })  
+    }
+    function loadProgressCount() 
+    {
+      $.ajax({
+        url: '<?= site_url('todoController/progress_count') ?>',
+        method: 'GET',
+        success: function(response) {
+          response = JSON.parse(response);
+          if (response.status === 'success') {
+            console.log('Response: ', response.message);
+            $('.inprogress-count').text(response.progress_count)
+          } else {
+            $('.inprogress-count').text('0');
+          }
+        },
+        error: function(xhr, status, error) {
+          console.error('Error: ', error);
+        }
+      })  
+    }
+    function loadDoneCount() 
+    {
+      $.ajax({
+        url: '<?= site_url('todoController/done_count') ?>',
+        method: 'GET',
+        success: function(response) {
+          response = JSON.parse(response);
+          if (response.status === 'success') {
+            console.log('Response: ', response.message);
+            $('.done-count').text(response.done_count)
+          } else {
+            $('.done-count').text('0');
+          }
+        },
+        error: function(xhr, status, error) {
+          console.error('Error: ', error);
+        }
+      })  
+    }
 
     // Fungsi untuk memuat data
     function loads() {
@@ -148,6 +235,9 @@ $(document).ready(function() {
                 console.log('Parsed: ', data);
                 render(data);
 
+                loadTodoCount();
+                loadProgressCount();
+                loadDoneCount();
                 inisialisasiSortable();
             },
             error: function(xhr, status, error) {
@@ -257,6 +347,10 @@ $(document).ready(function() {
                       icon: 'success',
                       title:'"' + itemTitle + '"' + ' berhasil dipindahkan ke ' + location,
                     });
+
+                    loadTodoCount();
+                    loadProgressCount();
+                    loadDoneCount();
                   }
                 },
               })
@@ -347,6 +441,9 @@ $(document).ready(function() {
             $('#todoEdit').modal('hide');
             $('#editForm')[0].reset();
 
+            loadTodoCount();
+            loadProgressCount();
+            loadDoneCount();
           }
         },
         error: function(xhr, status, error) {
@@ -383,6 +480,10 @@ $(document).ready(function() {
                 icon: 'success',
                 title: response.message,
               });
+
+              loadTodoCount();
+              loadProgressCount();
+              loadDoneCount();
             }
           },
           error: function(xhr, status, error) {
@@ -424,9 +525,13 @@ $(document).ready(function() {
                         icon: 'success',
                         title: 'Data berhasil ditambahkan'
                     });
-
+                    
                     $('#todoAdd').modal('hide');
                     $('#addForm')[0].reset();
+
+                    loadTodoCount();
+                    loadProgressCount();
+                    loadDoneCount();
 
                     // Inisialisasi sortable setelah data ditambahkan
                     inisialisasiSortable();
@@ -441,6 +546,10 @@ $(document).ready(function() {
             }
         });
     });
+
+    loadTodoCount();
+    loadProgressCount();
+    loadDoneCount();
 });
 
 

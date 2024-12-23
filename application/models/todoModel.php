@@ -62,4 +62,25 @@ class todoModel extends CI_Model
         return $this->db->delete($this->table);
     }
 
+    public function count_by_todo($user_id)
+    {
+        $this->db->where('id_user', $user_id);
+        $this->db->where('status', 'todo');
+        return $this->db->count_all_results($this->table);
+    }
+
+    public function count_by_progress($user_id)
+    {
+        $this->db->where('id_user', $user_id);
+        $this->db->where('status', 'progress');
+        return $this->db->count_all_results($this->table);
+    }
+
+    public function count_by_done($user_id)
+    {
+        $this->db->where('id_user', $user_id);
+        $this->db->where('status', 'done');
+        return $this->db->count_all_results($this->table);
+    }
+
 }

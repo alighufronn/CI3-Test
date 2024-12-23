@@ -94,4 +94,9 @@ class UserModel extends CI_Model
         $this->db->where('id', $id);
         return $this->db->update($this->table, $data);
     }
+
+    public function get_user_count()
+    {
+        return $this->db->count_all($this->table);
+    }
 }
