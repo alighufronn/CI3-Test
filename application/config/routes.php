@@ -59,6 +59,10 @@ $route['DashboardController/users_count'] = 'DashboardController/users_count';
 $route['DashboardController/events_count'] = 'DashboardController/events_count';
 $route['DashboardController/chats_count'] = 'DashboardController/chats_count';
 $route['DashboardController/todos_count'] = 'DashboardController/todos_count';
+$route['DashboardController/admin_count'] = 'DashboardController/admin_count';
+$route['DashboardController/staff_count'] = 'DashboardController/staff_count';
+$route['DashboardController/guest_count'] = 'DashboardController/guest_count';
+$route['DashboardController/get_chart_data'] = 'DashboardController/get_chart_data';
 
 // Auth
 $route['login'] = 'UserController/login';

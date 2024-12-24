@@ -96,4 +96,63 @@ class DashboardController extends CI_Controller
             echo json_encode(array('status' => 'error', 'message' => 'Tidak dapat menghitung jumlah to do list'));
         } 
     }
+
+    public function admin_count()
+    {
+        $admin_count = $this->UserModel->get_admin_count();
+
+        if ($admin_count) {
+            echo json_encode(array('status' => 'success', 'admin_count' => $admin_count, 'message' => 'Jumlah Admin ditampilkan'));
+        } else {
+            echo json_encode(array('status' => 'error', 'message' => 'Tidak dapat menghitung jumlah Admin'));
+        } 
+    }
+
+    public function staff_count()
+    {
+        $staff_count = $this->UserModel->get_staff_count();
+
+        if ($staff_count) {
+            echo json_encode(array('status' => 'success', 'staff_count' => $staff_count, 'message' => 'Jumlah Staff ditampilkan'));
+        } else {
+            echo json_encode(array('status' => 'error', 'message' => 'Tidak dapat menghitung jumlah Staff'));
+        } 
+    }
+
+    public function guest_count()
+    {
+        $guest_count = $this->UserModel->get_guest_count();
+
+        if ($guest_count) {
+            echo json_encode(array('status' => 'success', 'guest_count' => $guest_count, 'message' => 'Jumlah Guest ditampilkan'));
+        } else {
+            echo json_encode(array('status' => 'error', 'message' => 'Tidak dapat menghitung jumlah Guest'));
+        } 
+    }
+
+    public function get_chart_data()
+    {
+        $role_counts = $this->UserModel->get_role_counts();
+
+        $labels = [];
+        $data = [];
+        $backgroundColor = ['#00c0ef', '#3c8dbc', '#d2d6de'];
+
+        foreach ($role_counts as $index => $role_count) {
+            $labels[] = $role_count->role;
+            $data[] = $role_count->count;
+        }
+
+        $chart_data = array(
+            'labels' => $labels,
+            'datasets' => array(
+                array(
+                    'data' => $data,
+                    'backgroundColor' => array_slice($backgroundColor, 0, count($labels)),
+                )
+            )
+        );
+
+        echo json_encode($chart_data);
+    }
 }

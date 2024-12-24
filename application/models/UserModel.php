@@ -99,4 +99,31 @@ class UserModel extends CI_Model
     {
         return $this->db->count_all($this->table);
     }
+
+    public function get_admin_count()
+    {
+        $this->db->where('role', 'admin');
+        return $this->db->count_all_results($this->table);
+    }
+
+    public function get_staff_count()
+    {
+        $this->db->where('role', 'staff');
+        return $this->db->count_all_results($this->table);
+    }
+
+    public function get_guest_count()
+    {
+        $this->db->where('role', 'guest');
+        return $this->db->count_all_results($this->table);
+    }
+
+    public function get_role_counts()
+    {
+        $this->db->select('role, COUNT(*) as count');
+        $this->db->group_by('role');
+        $query = $this->db->get($this->table);
+
+        return $query->result();
+    }
 }

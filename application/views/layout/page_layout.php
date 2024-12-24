@@ -35,6 +35,7 @@
    <link rel="stylesheet" href="<?= base_url('assets/AdminLTE/plugins/bs-stepper/css/bs-stepper.min.css') ?>">
    <!-- dropzonejs -->
    <link rel="stylesheet" href="<?= base_url('assets/AdminLTE/plugins/dropzone/min/dropzone.min.css') ?>">
+   <link rel="stylesheet" href="<?= base_url('assets/AdminLTE/plugins/chart.js/Chart.min.css') ?>">
   <!-- SweetAlert2 -->
    <link rel="stylesheet" href="<?= base_url('assets/AdminLTE/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css') ?>">
    <link rel="stylesheet" href="<?= base_url('assets/AdminLTE/plugins/sweetalert2/sweetalert2.min.css') ?>">
@@ -270,7 +271,7 @@
 </script>
 <!-- Toastr -->
 <script src="<?= base_url('assets/AdminLTE/plugins/toastr/toastr.min.js') ?>"></script>
-
+<script src="<?= base_url('assets/AdminLTE/plugins/chart.js/Chart.min.js') ?>"></script>
 <!-- Bootstrap 4 -->
 <script src="<?= base_url('assets/AdminLTE/plugins/bootstrap/js/bootstrap.bundle.min.js') ?>"></script>
 <!-- Select2 -->
