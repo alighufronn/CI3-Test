@@ -18,7 +18,7 @@ class DashboardController extends CI_Controller
     public function index()
     {
         if (!$this->session->userdata('logged_in')) {
-            redirect('login');
+            show_error('You are not authorized to access this page.', 401, 'Unauthorized');
             return;
         }
 
@@ -34,6 +34,11 @@ class DashboardController extends CI_Controller
 
     public function get_upcoming_events()
     {
+        if (!$this->session->userdata('logged_in')) {
+            show_error('You are not authorized to access this page.', 401, 'Unauthorized');
+            return;
+        }
+
         $user_id = $this->session->userdata('user_id');
         $role = $this->session->userdata('role');
 
@@ -48,6 +53,11 @@ class DashboardController extends CI_Controller
 
     public function users_count()
     {
+        if (!$this->session->userdata('logged_in')) {
+            show_error('You are not authorized to access this page.', 401, 'Unauthorized');
+            return;
+        }
+
         $user_count = $this->UserModel->get_user_count();
         
         if ($user_count) {
@@ -59,6 +69,11 @@ class DashboardController extends CI_Controller
 
     public function events_count()
     {
+        if (!$this->session->userdata('logged_in')) {
+            show_error('You are not authorized to access this page.', 401, 'Unauthorized');
+            return;
+        }
+
         $user_id = $this->session->userdata('user_id');
         $role = $this->session->userdata('role');
 
@@ -73,6 +88,11 @@ class DashboardController extends CI_Controller
 
     public function chats_count()
     {
+        if (!$this->session->userdata('logged_in')) {
+            show_error('You are not authorized to access this page.', 401, 'Unauthorized');
+            return;
+        }
+
         $user_id = $this->session->userdata('user_id');
 
         $chat_count = $this->ChatModel->count_chat_by_sender($user_id);
@@ -86,6 +106,11 @@ class DashboardController extends CI_Controller
 
     public function todos_count()
     {
+        if (!$this->session->userdata('logged_in')) {
+            show_error('You are not authorized to access this page.', 401, 'Unauthorized');
+            return;
+        }
+
         $user_id = $this->session->userdata('user_id');
 
         $todo_count = $this->todoModel->count_by_todo($user_id);
@@ -99,6 +124,11 @@ class DashboardController extends CI_Controller
 
     public function admin_count()
     {
+        if (!$this->session->userdata('logged_in')) {
+            show_error('You are not authorized to access this page.', 401, 'Unauthorized');
+            return;
+        }
+
         $admin_count = $this->UserModel->get_admin_count();
 
         if ($admin_count) {
@@ -110,6 +140,11 @@ class DashboardController extends CI_Controller
 
     public function staff_count()
     {
+        if (!$this->session->userdata('logged_in')) {
+            show_error('You are not authorized to access this page.', 401, 'Unauthorized');
+            return;
+        }
+
         $staff_count = $this->UserModel->get_staff_count();
 
         if ($staff_count) {
@@ -121,6 +156,11 @@ class DashboardController extends CI_Controller
 
     public function guest_count()
     {
+        if (!$this->session->userdata('logged_in')) {
+            show_error('You are not authorized to access this page.', 401, 'Unauthorized');
+            return;
+        }
+
         $guest_count = $this->UserModel->get_guest_count();
 
         if ($guest_count) {
@@ -132,6 +172,11 @@ class DashboardController extends CI_Controller
 
     public function get_chart_data()
     {
+        if (!$this->session->userdata('logged_in')) {
+            show_error('You are not authorized to access this page.', 401, 'Unauthorized');
+            return;
+        }
+        
         $role_counts = $this->UserModel->get_role_counts();
 
         $labels = [];

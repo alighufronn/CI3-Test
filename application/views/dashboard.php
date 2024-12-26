@@ -376,7 +376,6 @@
             url: '<?= site_url('DashboardController/get_chart_data') ?>',
             method: 'GET',
             success: function(response) {
-                console.log('Response: ', response);
                 var data = JSON.parse(response);
                 updatePieChart(data);
             },

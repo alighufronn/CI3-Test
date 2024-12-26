@@ -106,3 +106,11 @@ $route['ChatController/receive_chats'] = 'ChatController/receive_chats';
 $route['ChatController/send_chat'] = 'ChatController/send_chat';
 $route['ChatController/edit_chat'] = 'ChatController/edit_chat';
 $route['ChatController/delete_chat'] = 'ChatController/delete_chat';
+
+// Transaction
+$route['transaction'] = 'TransactionController/index';
+$route['TransactionController/load_category'] = 'TransactionController/load_category';
+$route['TransactionController/loads'] = 'TransactionController/loads';
+$route['TransactionController/item_add'] = 'TransactionController/item_add';
+$route['TransactionController/item_edit'] = 'TransactionController/item_edit';
+$route['TransactionController/item_delete'] = 'TransactionController/item_delete';

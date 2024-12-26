@@ -15,7 +15,7 @@ class ChatController extends CI_Controller
     public function index()
     {
         if (!$this->session->userdata('logged_in')) {
-            redirect('login');
+            show_error('You are not authorized to access this page.', 401, 'Unauthorized');
             return;
         }
 
@@ -34,7 +34,7 @@ class ChatController extends CI_Controller
     public function load_users()
     {
         if (!$this->session->userdata('logged_in')) {
-            redirect('login');
+            show_error('You are not authorized to access this page.', 401, 'Unauthorized');
             return;
         }
 
@@ -63,7 +63,7 @@ class ChatController extends CI_Controller
     public function load_chats_with_user()
     {
         if (!$this->session->userdata('logged_in')) {
-            redirect('login');
+            show_error('You are not authorized to access this page.', 401, 'Unauthorized');
             return;
         }
 
@@ -82,7 +82,7 @@ class ChatController extends CI_Controller
     public function send_chat()
     {
         if (!$this->session->userdata('logged_in')) {
-            redirect('login');
+            show_error('You are not authorized to access this page.', 401, 'Unauthorized');
             return;
         }
 
@@ -123,6 +123,11 @@ class ChatController extends CI_Controller
 
     public function edit_chat()
     {
+        if (!$this->session->userdata('logged_in')) {
+            show_error('You are not authorized to access this page.', 401, 'Unauthorized');
+            return;
+        }
+
         $id = $this->input->post('id');
         $message = $this->input->post('message');
 
@@ -142,6 +147,11 @@ class ChatController extends CI_Controller
 
     public function delete_chat()
     {
+        if (!$this->session->userdata('logged_in')) {
+            show_error('You are not authorized to access this page.', 401, 'Unauthorized');
+            return;
+        }
+
         $id = $this->input->post('id');
 
         $deleteChat = $this->ChatModel->delete($id);

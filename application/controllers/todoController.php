@@ -14,7 +14,7 @@ class todoController extends CI_Controller
     public function index()
     {
         if (!$this->session->userdata('logged_in')) {
-            redirect('login');
+            show_error('You are not authorized to access this page.', 401, 'Unauthorized');
             return;
         }
 
@@ -33,7 +33,7 @@ class todoController extends CI_Controller
     public function loads()
     {
         if (!$this->session->userdata('logged_in')) {
-            redirect('login');
+            show_error('You are not authorized to access this page.', 401, 'Unauthorized');
             return;
         }
 
@@ -47,7 +47,7 @@ class todoController extends CI_Controller
     public function add_todo()
     {
         if (!$this->session->userdata('logged_in')) {
-            redirect('login');
+            show_error('You are not authorized to access this page.', 401, 'Unauthorized');
             return;
         }
 
@@ -71,7 +71,7 @@ class todoController extends CI_Controller
     public function get_todo()
     {
         if (!$this->session->userdata('logged_in')) {
-            redirect('login');
+            show_error('You are not authorized to access this page.', 401, 'Unauthorized');
             return;
         }
 
@@ -89,7 +89,7 @@ class todoController extends CI_Controller
     public function update_todo()
     {
         if (!$this->session->userdata('logged_in')) {
-            redirect('login');
+            show_error('You are not authorized to access this page.', 401, 'Unauthorized');
             return;
         }
 
@@ -113,7 +113,7 @@ class todoController extends CI_Controller
     public function save_position()
     {
         if (!$this->session->userdata('logged_in')) {
-            redirect('login');
+            show_error('You are not authorized to access this page.', 401, 'Unauthorized');
             return;
         }
 
@@ -127,6 +127,11 @@ class todoController extends CI_Controller
 
     public function delete_todo()
     {
+        if (!$this->session->userdata('logged_in')) {
+            show_error('You are not authorized to access this page.', 401, 'Unauthorized');
+            return;
+        }
+
         $id = $this->input->post('id');
 
         $delete = $this->todoModel->delete($id);
@@ -139,6 +144,11 @@ class todoController extends CI_Controller
 
     public function todo_count()
     {
+        if (!$this->session->userdata('logged_in')) {
+            show_error('You are not authorized to access this page.', 401, 'Unauthorized');
+            return;
+        }
+
         $user_id = $this->session->userdata('user_id');
 
         $todo_count = $this->todoModel->count_by_todo($user_id);
@@ -152,6 +162,11 @@ class todoController extends CI_Controller
 
     public function progress_count()
     {
+        if (!$this->session->userdata('logged_in')) {
+            show_error('You are not authorized to access this page.', 401, 'Unauthorized');
+            return;
+        }
+
         $user_id = $this->session->userdata('user_id');
 
         $progress_count = $this->todoModel->count_by_progress($user_id);
@@ -165,6 +180,11 @@ class todoController extends CI_Controller
 
     public function done_count()
     {
+        if (!$this->session->userdata('logged_in')) {
+            show_error('You are not authorized to access this page.', 401, 'Unauthorized');
+            return;
+        }
+        
         $user_id = $this->session->userdata('user_id');
 
         $done_count = $this->todoModel->count_by_done($user_id);

@@ -8,6 +8,7 @@
 
 
     <?php if($role === 'admin'): ?>
+    <input type="hidden" name="csrf_test_name" value="<?= $this->security->get_csrf_hash(); ?>">
 
         <div class="card">
             <div class="card-body">
@@ -35,93 +36,93 @@
 
         <!-- Add User Modal -->
         <div class="modal fade" id="addUser">
-        <div class="modal-dialog modal-sm">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title text-bold">Tambah User</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
+            <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title text-bold">Tambah User</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body">
+                <form id="addUserForm">
+                    <div class="form-group">
+                        <label for="">Nama</label>
+                        <input type="text" class="form-control" id="namaUser" placeholder="Nama lengkap">
+                    </div>
+                    <div class="form-group">
+                        <label for="">Role</label>
+                        <select id="roleUser" class="form-control select2 w-100">
+                            <option value="" disabled selected>── Select Role ──</option>
+        
+                            <?php foreach($roles as $role): ?>
+                                <option value="<?= $role->role_name ?>"><?= $role->role_name ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="">Username</label>
+                        <input type="text" class="form-control" id="username" placeholder="Masukkan username">
+                    </div>
+                    <div class="form-group">
+                        <label for="">Password</label>
+                        <input type="password" class="form-control" id="password" placeholder="Masukkan password">
+                    </div>
+                </form>
+                </div>
+                <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="saveUser">Simpan</button>
+                </div>
             </div>
-            <div class="modal-body">
-              <form id="addUserForm">
-                <div class="form-group">
-                    <label for="">Nama</label>
-                    <input type="text" class="form-control" id="namaUser" placeholder="Nama lengkap">
-                  </div>
-                  <div class="form-group">
-                    <label for="">Role</label>
-                    <select id="roleUser" class="form-control select2 w-100">
-                        <option value="" disabled selected>── Select Role ──</option>
-    
-                        <?php foreach($roles as $role): ?>
-                            <option value="<?= $role->role_name ?>"><?= $role->role_name ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                  </div>
-                  <div class="form-group">
-                    <label for="">Username</label>
-                    <input type="text" class="form-control" id="username" placeholder="Masukkan username">
-                  </div>
-                  <div class="form-group">
-                    <label for="">Password</label>
-                    <input type="password" class="form-control" id="password" placeholder="Masukkan password">
-                  </div>
-              </form>
             </div>
-            <div class="modal-footer justify-content-between">
-              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary" id="saveUser">Simpan</button>
-            </div>
-          </div>
         </div>
-      </div>
 
 
-      <!-- Edit User Modal -->
-      <div class="modal fade" id="editUser">
-        <div class="modal-dialog modal-sm">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title text-bold">Edit User</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
+        <!-- Edit User Modal -->
+        <div class="modal fade" id="editUser">
+            <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title text-bold">Edit User</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body">
+                <form id="editUserForm">
+                    <input type="text" id="editID" hidden>
+                    <div class="form-group">
+                        <label for="">Nama</label>
+                        <input type="text" class="form-control" id="namaUserEdit" placeholder="Nama lengkap">
+                    </div>
+                    <div class="form-group">
+                        <label for="">Role</label>
+                        <select id="roleUserEdit" class="form-control select2 w-100">
+                            <option value="" disabled>──     Select Role ──</option>
+        
+                            <?php foreach($roles as $role): ?>
+                                <option value="<?= $role->role_name ?>"><?= $role->role_name ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="">Username</label>
+                        <input type="text" class="form-control" id="usernameEdit" placeholder="New Username">
+                    </div>
+                    <div class="form-group">
+                        <label for="">Password</label>
+                        <input type="password" class="form-control" id="passwordEdit" placeholder="New Password">
+                    </div>
+                </form>
+                </div>
+                <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="btnEditUser">Simpan</button>
+                </div>
             </div>
-            <div class="modal-body">
-              <form id="editUserForm">
-                <input type="text" id="editID" hidden>
-                  <div class="form-group">
-                    <label for="">Nama</label>
-                    <input type="text" class="form-control" id="namaUserEdit" placeholder="Nama lengkap">
-                  </div>
-                  <div class="form-group">
-                    <label for="">Role</label>
-                    <select id="roleUserEdit" class="form-control select2 w-100">
-                        <option value="" disabled>──     Select Role ──</option>
-    
-                        <?php foreach($roles as $role): ?>
-                            <option value="<?= $role->role_name ?>"><?= $role->role_name ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                  </div>
-                  <div class="form-group">
-                    <label for="">Username</label>
-                    <input type="text" class="form-control" id="usernameEdit" placeholder="New Username">
-                  </div>
-                  <div class="form-group">
-                    <label for="">Password</label>
-                    <input type="password" class="form-control" id="passwordEdit" placeholder="New Password">
-                  </div>
-              </form>
             </div>
-            <div class="modal-footer justify-content-between">
-              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary" id="btnEditUser">Simpan</button>
-            </div>
-          </div>
         </div>
-      </div>
 
 
       <script>
@@ -198,12 +199,16 @@
                 $('.btnDelete').on('click', function() {
                     var row = $(this).closest('tr');
                     var user_id = row.data('id');
+                    var csrf_token = $('input[name="csrf_test_name"]').val();
 
                     if (confirm('Apakah anda yakin ingin menghapus user ini?')) {
                         $.ajax({
                             url: '<?= site_url('UserController/delete_user') ?>',
                             method: 'POST',
-                            data: { id: user_id},
+                            data: { 
+                                csrf_test_name: csrf_token,
+                                id: user_id
+                            },
                             success: function (response) {
                                 response = JSON.parse(response);
                                 if (response.status === 'success') {
@@ -237,6 +242,7 @@
 
                     var row = $(this).closest('tr');
                     var user_id = row.data('id');
+                    var csrf_token = $('input[name="csrf_test_name"]').val();
                     
                     $('table tbody tr').removeClass('selected-row');
                     row.addClass('selected-row');
@@ -244,7 +250,10 @@
                     $.ajax({
                         url: '<?= site_url('UserController/get_users') ?>',
                         method: 'POST',
-                        data: { id: user_id },
+                        data: { 
+                            csrf_test_name: csrf_token,
+                            id: user_id 
+                        },
                         success: function(response) {
                             response = JSON.parse(response);
                             if (response.status === 'success') {
@@ -278,6 +287,7 @@
                 var role = $('#roleUser').val();
                 var username = $('#username').val();
                 var password = $('#password').val();
+                var csrf_token = $('input[name="csrf_test_name"]').val();
 
                 if (/\s/.test(username)) {
                     Toast.fire({
@@ -288,6 +298,7 @@
                 }
 
                 var dataUser = {
+                    csrf_test_name: csrf_token,
                     name: name,
                     role: role,
                     username: username,
@@ -335,6 +346,9 @@
                 var role = $('#roleUserEdit').val();
                 var username = $('#usernameEdit').val();
                 var password = $('#passwordEdit').val();
+                var csrf_token = $('input[name="csrf_test_name"]').val();
+
+                console.log('Token: ', csrf_token);
 
                 if(/\s/.test(username)) {
                     Toast.fire({
@@ -345,6 +359,7 @@
                 }
 
                 var newData = {
+                    csrf_test_name: csrf_token,
                     id: user_id,
                     name: name,
                     role: role,
@@ -361,6 +376,7 @@
                         if (response.status === 'success') {
                             console.log('Response: ', response);
                             updateUserRow(response.user);
+                            console.log('Data: ', newData);
 
                             Toast.fire({
                                 icon: 'success',
@@ -372,11 +388,13 @@
                             Toast.fire({
                                 icon: 'error',
                                 title: response.message
-                            })
+                            });
+
                         }
                     },
                     error: function(xhr, status, error) {
                         console.log('Error: ', error);
+                        console.log('Data', newData);
                         Toast.fire({
                             icon: 'error',
                             title: 'Gagal mengedit data',

@@ -49,6 +49,7 @@ class UserController extends CI_Controller {
         $this->session->unset_userdata('username');
         $this->session->unset_userdata('role');
         $this->session->unset_userdata('user_id');
+        $this->session->sess_destroy();
         
         redirect('/login');
     }
@@ -57,16 +58,16 @@ class UserController extends CI_Controller {
     public function index()
     {
         if (!$this->session->userdata('logged_in')) {
-            redirect('login');
+            show_error('You are not authorized to access this page.', 401, 'Unauthorized');
             return;
         }
 
         $role = $this->session->userdata('role');
         
         if ($role !== 'admin') {
-            redirect()->back();
+            show_error('You are not authorized to access this page.', 403, 'Forbidden');
             return;
-        }
+        }        
 
         $data['logged_in'] = $this->session->userdata('logged_in');
         $data['name'] = $this->session->userdata('name');
@@ -85,15 +86,15 @@ class UserController extends CI_Controller {
     public function load_users()
     {
         if (!$this->session->userdata('logged_in')) {
-            redirect('login');
+            show_error('You are not authorized to access this page.', 401, 'Unauthorized');
             return;
         }
         
         $role = $this->session->userdata('role'); 
         if ($role !== 'admin') {
-            redirect()->back();
+            show_error('You are not authorized to access this page.', 403, 'Forbidden');
             return;
-        }
+        }        
 
         $users = $this->UserModel->get_users();
         echo json_encode($users);
@@ -102,6 +103,11 @@ class UserController extends CI_Controller {
 
     public function add_user()
     {
+        if (!$this->session->userdata('logged_in')) {
+            show_error('You are not authorized to access this page.', 401, 'Unauthorized');
+            return;
+        }
+
         $username = $this->input->post('username');
         $name = $this->input->post('name');
         $role = $this->input->post('role');
@@ -138,6 +144,11 @@ class UserController extends CI_Controller {
 
     public function get_users()
     {
+        if (!$this->session->userdata('logged_in')) {
+            show_error('You are not authorized to access this page.', 401, 'Unauthorized');
+            return;
+        }
+
         $user_id = $this->input->post('id');
 
         $user = $this->UserModel->get_user_by_id($user_id);
@@ -152,6 +163,16 @@ class UserController extends CI_Controller {
 
     public function edit_user()
     {
+        if (!$this->session->userdata('logged_in')) {
+            show_error('You are not authorized to access this page.', 401, 'Unauthorized');
+            return;
+        }
+
+        if ($this->input->post($this->security->get_csrf_token_name()) !== $this->security->get_csrf_hash()) {
+            show_error('CSRF token tidak valid.', 403);
+            return;
+        }
+
         $user_id = $this->input->post('id');
         $username = $this->input->post('username');
         $name = $this->input->post('name');
@@ -171,10 +192,11 @@ class UserController extends CI_Controller {
             return;
         }
 
-        if (empty($username && $name && $role)) {
+        if (empty($username) || empty($name) || empty($role)) {
             echo json_encode(array('status' => 'error', 'message' => 'Name, username, dan role tidak boleh kosong'));
             return;
         }
+        
 
         if (!empty($password)) {
             $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
@@ -202,10 +224,14 @@ class UserController extends CI_Controller {
 
     public function delete_user()
     {
+        if (!$this->session->userdata('logged_in')) {
+            show_error('You are not authorized to access this page.', 401, 'Unauthorized');
+            return;
+        }
+
         $user_id = $this->input->post('id');
 
         $events_deleted = $this->CalendarModel->delete_events_by_user($user_id);
-
         $user_deleted = $this->UserModel->delete($user_id);
 
         if ($user_deleted && $events_deleted) {

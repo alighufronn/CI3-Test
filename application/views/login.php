@@ -28,6 +28,7 @@
       <p class="login-box-msg">Sign in to start your session</p>
 
       <form id="loginForm" action="<?= site_url('login/login_process') ?>" method="post">
+        <input type="hidden" name="csrf_test_name" value="<?= $this->security->get_csrf_hash(); ?>">
         <div class="input-group mb-3">
           <input type="text" class="form-control" placeholder="Username" name="username" id="username">
           <div class="input-group-append">

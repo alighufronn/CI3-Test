@@ -15,7 +15,7 @@ class CalendarController extends CI_Controller
     public function index()
     {
         if (!$this->session->userdata('logged_in')) {
-            redirect('login');
+            show_error('You are not authorized to access this page.', 401, 'Unauthorized');
             return;
         }
 
@@ -41,7 +41,7 @@ class CalendarController extends CI_Controller
     public function load_events()
     {
         if (!$this->session->userdata('logged_in')) {
-            redirect('login');
+            show_error('You are not authorized to access this page.', 401, 'Unauthorized');
             return;
         }
 
@@ -61,6 +61,11 @@ class CalendarController extends CI_Controller
 
     public function add_event() 
     {
+        if (!$this->session->userdata('logged_in')) {
+            show_error('You are not authorized to access this page.', 401, 'Unauthorized');
+            return;
+        }
+
         $title = $this->input->post('title');
         $start = $this->input->post('start');
         $end = $this->input->post('end');
@@ -94,7 +99,13 @@ class CalendarController extends CI_Controller
         }
     }
 
-    public function update_event() {
+    public function update_event() 
+    {
+        if (!$this->session->userdata('logged_in')) {
+            show_error('You are not authorized to access this page.', 401, 'Unauthorized');
+            return;
+        }
+
         $id = $this->input->post('id');
         $title = $this->input->post('title');
         $start = $this->input->post('start');
@@ -127,7 +138,13 @@ class CalendarController extends CI_Controller
         }
     }    
 
-    public function delete_event() {
+    public function delete_event()
+    {
+        if (!$this->session->userdata('logged_in')) {
+            show_error('You are not authorized to access this page.', 401, 'Unauthorized');
+            return;
+        }
+
         $id = $this->input->post('id');
         $user_role = $this->session->userdata('role');
         
@@ -144,6 +161,11 @@ class CalendarController extends CI_Controller
 
     public function add_event_role()
     {
+        if (!$this->session->userdata('logged_in')) {
+            show_error('You are not authorized to access this page.', 401, 'Unauthorized');
+            return;
+        }
+        
         $title = $this->input->post('title');
         $role = $this->input->post('role');
         $id_user = $this->input->post('id_user');
