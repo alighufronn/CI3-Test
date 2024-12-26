@@ -55,7 +55,22 @@
     <div class="col-md-4">
         <div class="card">
             <div class="card-body">
-
+                <div id="keranjang" style="max-height: 400px;">
+                    <div class="card bg-gradient-light">
+                        <div class="card-body">
+                            <h5 class="text-bold">Item</h5>
+                            <span>Rp. </span><span id="harga-item-satuan">100000</span>
+                            <br><br>
+                            <label for="">Total:</label>
+                            <h5 class="text-bold">Rp. <span id="harga-item-total"></span></h5>
+                            <div class="input-group">
+                                <button class="btn btn-sm btn-primary" id="kurang"><i class="fas fa-minus"></i></button>
+                                <input type="text" class="form-control form-control-sm text-center" id="qty-item" value="1">
+                                <button class="btn btn-sm btn-primary" id="tambah"><i class="fas fa-plus"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -270,7 +285,7 @@
 
                 row.append(`<td class="text-center table-bordered">${index++}</td>`);
                 row.append(`<td name="item">${item.item_name}</td>`);
-                row.append(`<td name="kategori" class="text-center">${item.kategori}</td>`);
+                row.append(`<td name="kategori">${item.kategori}</td>`);
                 row.append(`<td>Rp. <span name="harga">${item.harga}</span></td>`);
                 row.append(`<td name="stock" class="text-center">${item.stock}</td>`);
 
@@ -279,7 +294,8 @@
             sellTable.columns.adjust().draw();
         }
 
-        // Save Item
+        <?php if($role === 'admin'): ?>
+            // Save Item
         $('#saveItem').on('click', function(e) 
         {
             e.preventDefault();
@@ -322,6 +338,7 @@
                 }
             })
         });
+        <?php endif; ?>
 
         // Menampilkan value di form edit
         $('#sell-table tbody').on('click', 'tr', function(e) 
@@ -352,7 +369,8 @@
             $('#editStock').val(stock);
         });
 
-        // Mengedit item
+        <?php if($role === 'admin'): ?>
+            // Mengedit item
         function updateRow(item)
         {
             var row = sellTable.row($('tr[data-id="' + item.id + '"]')).node();
@@ -442,8 +460,56 @@
                 }
             });
         });
+        <?php endif; ?>
 
         loads();
         loadCategory();
     });
+</script>
+
+<script>
+    $(document).ready(function() 
+    {
+        $('#kurang').on('click', function() 
+        {
+            var qty = parseInt($('#qty-item').val());
+            if (qty > 1) {
+                $('#qty-item').val(qty - 1);
+            }
+            totalHargaItem();
+        });
+
+        $('#tambah').on('click', function() 
+        {
+            var qty = parseInt($('#qty-item').val());
+            $('#qty-item').val(qty + 1);
+            totalHargaItem();
+        });
+
+        $('#qty-item').on('blur', function() 
+        {    
+            if ($(this).val() < 1) {
+                $(this).val('1');
+            }
+            totalHargaItem();
+        })
+
+        function totalHargaItem()
+        {
+            var hargaItem = $('#harga-item-satuan').text();
+            var qtyItem = $('#qty-item').val();
+
+            var total = hargaItem * qtyItem;
+            $('#harga-item-total').text(formatNumber(total));
+
+            console.log('Total: ', total);
+        }
+
+        function formatNumber(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        totalHargaItem();
+    });
+
 </script>
