@@ -114,3 +114,4 @@ $route['TransactionController/loads'] = 'TransactionController/loads';
 $route['TransactionController/item_add'] = 'TransactionController/item_add';
 $route['TransactionController/item_edit'] = 'TransactionController/item_edit';
 $route['TransactionController/item_delete'] = 'TransactionController/item_delete';
+$route['TransactionController/checkout'] = 'TransactionController/checkout';

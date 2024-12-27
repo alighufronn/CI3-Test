@@ -17,6 +17,10 @@
     #sell-table tbody tr {
         cursor: pointer;
     }
+
+    #keranjang, #keranjang-text {
+        display: none;
+    }
 </style>
 
 <div class="row">
@@ -53,26 +57,20 @@
         </div>
     </div>
     <div class="col-md-4">
-        <div class="card">
-            <div class="card-body">
-                <div id="keranjang" style="max-height: 400px;">
-                    <div class="card bg-gradient-light">
-                        <div class="card-body">
-                            <h5 class="text-bold">Item</h5>
-                            <span>Rp. </span><span id="harga-item-satuan">100000</span>
-                            <br><br>
-                            <label for="">Total:</label>
-                            <h5 class="text-bold">Rp. <span id="harga-item-total"></span></h5>
-                            <div class="input-group">
-                                <button class="btn btn-sm btn-primary" id="kurang"><i class="fas fa-minus"></i></button>
-                                <input type="text" class="form-control form-control-sm text-center" id="qty-item" value="1">
-                                <button class="btn btn-sm btn-primary" id="tambah"><i class="fas fa-plus"></i></button>
-                            </div>
-                        </div>
-                    </div>
+        <?php if($role !== 'admin'): ?>
+            <label for="" class="text-bold" id="keranjang-text">Keranjang</label>
+            <div id="keranjang" style="max-height: 450px; overflow-y: scroll; padding: 10px;">
+                
+            </div>
+            <div class="card shadow" id="card-bayar">
+                <div class="card-body">
+                    <h5 class="text-bold">Total: Rp. <span id="grand-total">0</span></h5>
+                </div>
+                <div class="card-footer">
+                    <button class="btn btn-primary w-100" id="btnCheckout" disabled>Checkout</button>
                 </div>
             </div>
-        </div>
+        <?php endif; ?>
     </div>
 </div>
 
@@ -281,21 +279,23 @@
             var index = sellTable.rows().count() + 1;
 
             items.forEach(function(item) {
-                var row = $('<tr>').attr('data-id', item.id);
+                var row = $('<tr>').attr('data-id', item.id).attr('data-seller-id', item.seller_id).attr('data-seller-name', item.seller_name);
 
                 row.append(`<td class="text-center table-bordered">${index++}</td>`);
                 row.append(`<td name="item">${item.item_name}</td>`);
                 row.append(`<td name="kategori">${item.kategori}</td>`);
                 row.append(`<td>Rp. <span name="harga">${item.harga}</span></td>`);
-                row.append(`<td name="stock" class="text-center">${item.stock}</td>`);
+                row.append(`<td name="stock" class="text-center stock">${item.stock}</td>`);
 
                 sellTable.row.add(row);
             });
             sellTable.columns.adjust().draw();
+
+            disableRow();
         }
 
         <?php if($role === 'admin'): ?>
-            // Save Item
+        // Save Item
         $('#saveItem').on('click', function(e) 
         {
             e.preventDefault();
@@ -325,7 +325,7 @@
                         renderItems([data.items]);
 
                         $('#add-modal').modal('hide');
-                        $('#form-add').val('');
+                        $('#form-add')[0].reset();
 
                         Toast.fire({
                             icon: 'success',
@@ -338,7 +338,6 @@
                 }
             })
         });
-        <?php endif; ?>
 
         // Menampilkan value di form edit
         $('#sell-table tbody').on('click', 'tr', function(e) 
@@ -347,12 +346,7 @@
 
             if (role === 'admin') {
                 $('#edit-modal').modal('show');
-            } else {
-                Toast.fire({
-                    icon: 'error',
-                    title: 'Lu bukan admin jir'
-                });
-            }
+            } 
 
             var id = $(this).data('id');
             var item = $(this).find('td[name="item"]').text();
@@ -369,8 +363,7 @@
             $('#editStock').val(stock);
         });
 
-        <?php if($role === 'admin'): ?>
-            // Mengedit item
+        // Mengedit item
         function updateRow(item)
         {
             var row = sellTable.row($('tr[data-id="' + item.id + '"]')).node();
@@ -380,8 +373,9 @@
             $(row).find('td').eq(3).find('span[name="harga"]').text(item.harga);
             $(row).find('td').eq(4).text(item.stock);
 
-            sellTable.draw(false);
+            sellTable.row(row).invalidate().draw(false);
         }
+
         $('#btnEditItem').on('click', function(e) 
         {
             e.preventDefault();
@@ -464,52 +458,261 @@
 
         loads();
         loadCategory();
-    });
-</script>
-
-<script>
-    $(document).ready(function() 
-    {
-        $('#kurang').on('click', function() 
-        {
-            var qty = parseInt($('#qty-item').val());
-            if (qty > 1) {
-                $('#qty-item').val(qty - 1);
-            }
-            totalHargaItem();
-        });
-
-        $('#tambah').on('click', function() 
-        {
-            var qty = parseInt($('#qty-item').val());
-            $('#qty-item').val(qty + 1);
-            totalHargaItem();
-        });
-
-        $('#qty-item').on('blur', function() 
-        {    
-            if ($(this).val() < 1) {
-                $(this).val('1');
-            }
-            totalHargaItem();
-        })
-
-        function totalHargaItem()
-        {
-            var hargaItem = $('#harga-item-satuan').text();
-            var qtyItem = $('#qty-item').val();
-
-            var total = hargaItem * qtyItem;
-            $('#harga-item-total').text(formatNumber(total));
-
-            console.log('Total: ', total);
-        }
 
         function formatNumber(num) {
             return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         }
 
-        totalHargaItem();
+        function calculateGrandTotal()
+        {
+            var grandTotal = 0;
+
+            $('#keranjang').find('.harga-item-total').each(function() {
+                var total = parseFloat($(this).text().replace(/[^0-9,-]+/g, ""));
+                if (!isNaN(total)) {
+                    grandTotal += total;
+                }
+            });
+
+            $('#grand-total').text(grandTotal.toLocaleString("id-ID"));
+        }
+
+        <?php if($role !== 'admin'): ?>
+            $('#sell-table tbody').on('click', 'tr', function() {
+                var keranjang = $('#keranjang');
+                var keranjangText = $('#keranjang-text');
+                var checkout = $('#btnCheckout');
+                
+                var id = $(this).data('id');
+                var seller_id = $(this).data('seller-id');
+                var seller_name = $(this).data('seller-name');
+                var item = $(this).find('td[name="item"]').text();
+                var harga = $(this).find('td span[name="harga"]').text();
+                var stock = $(this).find('td[name="stock"]').text();
+                
+                if (keranjang.find(`div[data-item-id="${id}"]`).length > 0) {
+                    Toast.fire({
+                        icon: 'info',
+                        title: 'Item ini sudah ditambahkan ke dalam keranjang'
+                    });
+                    return;
+                }
+
+                console.log('Isi: ', stock);
+
+                var card = `
+                    <div class="card" data-item-id="${id}" data-seller-id="${seller_id}" data-seller-name="${seller_name}" data-stock="${stock}">
+                        <div class="card-body">
+                            <button class="btn btn-sm btn-danger float-right btnHapusItem"><i class="fas fa-trash"></i></button>
+                            <h5 class="text-bold">${item}</h5>
+                            <div class="text-xs text-gray">Stock: ${stock}</div>
+                            <span>Rp. </span><span class="harga-item-satuan" id="harga-item-satuan">${harga}</span>
+                            <br><br>
+                            <h5 class="text-bold">Rp. <span class="harga-item-total" id="harga-item-total"></span></h5>
+                            <div class="input-group">
+                                <button class="btn btn-sm btn-primary kurang" id="kurang"><i class="fas fa-minus"></i></button>
+                                <input type="text" class="form-control form-control-sm text-center qty-item" id="qty-item" value="1">
+                                <button class="btn btn-sm btn-primary tambah" id="tambah"><i class="fas fa-plus"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    `;
+
+                keranjang.append(card);
+
+                keranjang.find('.kurang').last().on('click', function() 
+                {
+                    var qtyInput = $(this).siblings('.qty-item');
+                    var qty = parseInt(qtyInput.val());
+                    if (qty > 1) {
+                        qtyInput.val(qty - 1);
+                        totalHargaItem($(this).closest('.card'));
+                    }
+                });
+
+                keranjang.find('.tambah').last().on('click', function() 
+                {
+                    var qtyInput = $(this).siblings('.qty-item');
+                    var qty = parseInt(qtyInput.val());
+                    var card = $(this).closest('.card');
+                    var stock = parseInt(card.data('stock'));
+                    
+                    if (qty < stock) {
+                        qtyInput.val(qty + 1);
+                        totalHargaItem(card);
+                    } else {
+                        Toast.fire({
+                            icon: 'warning',
+                            title: 'Stock tidak mencukupi',
+                        })
+                    }
+                });
+
+                keranjang.find('.qty-item').last().on('blur', function() 
+                {
+                    var card = $(this).closest('.card');
+                    var stock = parseInt(card.data('stock'));
+
+                    var qty = parseInt($(this).val());
+                    if (qty < 1 || isNaN(qty)) {
+                        $(this).val(1);
+                    }
+
+                    if (qty > stock) {
+                        $(this).val(stock);
+                    }
+                    totalHargaItem(card);
+                });
+
+                if (card.length > 0) {
+                    checkout.prop('disabled', false);
+                }
+
+                keranjang.find('.btnHapusItem').last().on('click', function()
+                {
+                    var card = $(this).closest('.card');
+                    card.remove();
+
+                    if (keranjang.find('.card').length < 1) {
+                        keranjang.css('display', 'none');
+                        keranjangText.css('display', 'none');
+                        checkout.prop('disabled', true);
+                    }
+                    calculateGrandTotal();
+                });
+                
+                totalHargaItem(keranjang.find('.card').last());
+
+                keranjang.css('display', 'block');
+                keranjangText.css('display', 'block');
+
+                calculateGrandTotal();
+            });
+        <?php endif; ?>
+
+        function totalHargaItem(card)
+        {
+            var hargaItem = parseFloat(card.find('#harga-item-satuan').text().replace(/[^0-9.-]+/g, ""));
+            var qtyItem = parseInt(card.find('.qty-item').val());
+
+            var total = hargaItem * qtyItem;
+            card.find('#harga-item-total').text(total.toLocaleString("id-ID"));
+
+            console.log('Total: ', total);
+
+            calculateGrandTotal();
+        }
+
+        calculateGrandTotal();
+
+
+        <?php if($role !== 'admin'): ?>
+            function disableRow() 
+            {
+                $('#sell-table tbody tr').each(function() {
+                    var stock = parseInt($(this).find('.stock').text());
+                    if (stock === 0) {
+                        $(this).addClass('stock-0');
+                        $(this).css('pointer-events', 'none');
+                        $(this).css('filter', 'brightness(70%)');
+                    } else {
+                        $(this).removeClass('stock-0');
+                        $(this).css('pointer-events', 'auto');
+
+                        $(this).off('click').on('click', function() 
+                        {
+                            if (role === 'admin') {
+                                $('#edit-modal').modal('show');
+                            } 
+
+                            var id = $(this).data('id');
+                            var item = $(this).find('td[name="item"]').text();
+                            var kategori = $(this).find('td[name="kategori"]').text();
+                            var harga = $(this).find('td span[name="harga"]').text();
+                            var stock = $(this).find('td[name="stock"]').text();
+
+                            console.log('Value: ', id);
+
+                            $('#editID').val(id);
+                            $('#editItem').val(item);
+                            $('#editKategori').val(kategori).change();
+                            $('#editHarga').val(harga);
+                            $('#editStock').val(stock);
+                        });
+                    }
+                });
+            }
+
+            disableRow();
+
+            // Add
+            $('#btnCheckout').on('click', function(e) {
+                e.preventDefault();
+
+                var items = [];
+
+                $('#keranjang .card').each(function() {
+                    var item = {
+                        item_id: $(this).data('item-id'),
+                        seller_id: $(this).data('seller-id'),
+                        seller_name: $(this).data('seller-name'),
+                        item_name: $(this).find('h5.text-bold').first().text(),
+                        harga_satuan: parseIndonesianNumber($(this).find('.harga-item-satuan').text()),
+                        qty: parseInt($(this).find('.qty-item').val()),
+                        harga_total: parseIndonesianNumber($(this).find('.harga-item-total').text()),
+                    };
+                    items.push(item);
+                });
+
+                $.ajax({
+                    url: '<?= site_url('TransactionController/checkout') ?>',
+                    method: 'POST',
+                    data: { items: items },
+                    success: function(response) {
+                        if (typeof response === 'string') {
+                            response = JSON.parse(response);
+                        }
+                        
+                        if (response.status === 'success') {
+                            Toast.fire({
+                                icon: 'success',
+                                title: 'Checkout berhasil'
+                            });
+
+                            response.items.forEach(function(item) {
+                                var row = $(`tr[data-id="${item.id}"]`);
+                                console.log('Updating stock for item:', item.id, 'new stock:', item.new_stock);
+                                row.find('.stock').text(item.new_stock);
+                            });
+
+                            disableRow();
+
+                            $('#keranjang').empty();
+                            $('#grand-total').text('0');
+                        } else {
+                            Toast.fire({
+                                icon: 'error',
+                                title: response.message
+                            })
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error: ', error);
+                        Toast.fire({
+                            icon: 'error',
+                            title: 'Error: Checkout gagal'
+                        });
+                    }
+                });
+            });
+
+            function parseIndonesianNumber(numberString)
+            {
+                var cleanedString = numberString.replace(/\./g, '').replace(/,/g, '.');
+                return parseFloat(cleanedString);
+            }
+        <?php endif; ?>
+
     });
 
 </script>

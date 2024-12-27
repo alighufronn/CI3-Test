@@ -11,6 +11,7 @@ class TransactionController extends CI_Controller {
         $this->load->model('ItemCategoryModel');
         $this->load->model('ItemSellModel');
         $this->load->model('ItemBuyModel');
+        $this->load->model('BuyLogModel');
         $this->load->helper(array('form', 'url', 'file'));
         $this->load->library('upload', 'session');
     }
@@ -119,7 +120,7 @@ class TransactionController extends CI_Controller {
         $updated = $this->ItemSellModel->get_item_by_id($id);
 
         if ($updated) {
-            echo json_encode(array('status' => 'success', 'items' => $updated, 'message' => 'Item berhasil diedit'));
+            echo json_encode(array('status' => 'success', 'items' => array($updated), 'message' => 'Item berhasil diedit'));
         } else {
             echo json_encode(array('status' => 'error', 'message' => 'Gagal mengedit item'));
         }
@@ -142,6 +143,81 @@ class TransactionController extends CI_Controller {
             echo json_encode(array('status' => 'success', 'items' => $deleted, 'message' => 'Item berhasil dihapus'));
         } else {
             echo json_encode(array('status' => 'error', 'message' => 'Gagal menghapus item'));
+        }
+    }
+
+    public function checkout()
+    {
+        $items = $this->input->post('items');
+        $user_id = $this->session->userdata('user_id');
+        $user_name = $this->session->userdata('name');
+
+        $this->db->trans_start();
+
+        $transaction_data = array(
+            'buyer_id' => $user_id,
+            'grand_total' => 0,
+        );
+
+        $this->db->insert('buy_log', $transaction_data);
+        $transaction_id = $this->db->insert_id();
+
+        $grand_total = 0;
+        $updated_items = [];
+
+        foreach($items as $item) {
+            $item_id = $item['item_id'];
+            $item_name = $item['item_name'];
+            $seller_id = $item['seller_id'];
+            $seller_name = $item['seller_name'];
+            $qty = $item['qty'];
+            $harga_satuan = $item['harga_satuan'];
+            $harga_total = $item['harga_total'];
+
+            $transaction_item_data = array(
+                'transaction_id' => $transaction_id,
+                'item_id' => $item_id,
+                'item_name' => $item_name,
+                'seller_id' => $seller_id,
+                'seller_name' => $seller_name,
+                'qty' => $qty,
+                'harga_satuan' => $harga_satuan,
+                'harga_total' => $harga_total,
+                'buyer_id' => $user_id,
+                'buyer_name' => $user_name
+            );
+            $this->db->insert('item_buy', $transaction_item_data);
+
+            $this->db->where('id', $item_id);
+            $current_stock = $this->db->get('item_sell')->row()->stock;
+
+            if ($current_stock !== null && $current_stock >= $qty) {
+                $new_stock = $current_stock - $qty;
+                $this->db->where('id', $item_id);
+                $this->db->update('item_sell', array('stock' => $new_stock));
+
+                $updated_items[] = array(
+                    'id' => $item_id,
+                    'new_stock' => $new_stock
+                );
+            } else {
+                $this->db->trans_rollback();
+                echo json_encode(array('status' => 'error', 'message' => 'Stok tidak mencukupi'));
+                return;
+            }
+
+            $grand_total += $harga_total;
+        };
+
+        $this->db->where('id', $transaction_id);
+        $this->db->update('buy_log', array('grand_total' => $grand_total));
+
+        $this->db->trans_complete();
+
+        if ($this->db->trans_status() === FALSE) {
+            echo json_encode(array('status' => 'error', 'message' => 'Gagal memproses transaksi'));
+        } else {
+            echo json_encode(array('status' => 'success', 'items' => $updated_items, 'message' => 'Item berhasil diproses'));
         }
     }
 }

@@ -1,8 +1,8 @@
 <?php
 
-class ItemBuyModel extends CI_Model
+class BuyLogModel extends CI_Model
 {
-    protected $table = 'item_buy';
+    protected $table = 'buy_log';
     protected $primaryKey = 'id';
     protected $useAutoIncrement = true;
 
@@ -14,7 +14,7 @@ class ItemBuyModel extends CI_Model
 
     public function get_allowed_fields()
     {
-        return ['buyer_id', 'transaction_id', 'buyer_name', 'item_id', 'item_name', 'harga_satuan', 'qty', 'harga_total', 'seller_id', 'seller_name'];
+        return ['buyer_id', 'grand_total'];
     }
 
     public function find()
@@ -22,5 +22,4 @@ class ItemBuyModel extends CI_Model
         $query = $this->db->get($this->table);
         return $query->result();
     }
-
 }
